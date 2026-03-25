@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-variant": "#e1e3e4",
+            "secondary-fixed-dim": "#b1c6f9",
+            "surface": "#f8f9fa",
+            "on-error": "#ffffff",
+            "surface-container-high": "#e7e8e9",
+            "tertiary-fixed-dim": "#ffb786",
+            "error-container": "#ffdad6",
+            "surface-container-highest": "#e1e3e4",
+            "on-tertiary-fixed": "#311400",
+            "on-tertiary-fixed-variant": "#723600",
+            "surface-container-low": "#f3f4f5",
+            "inverse-surface": "#2e3132",
+            "secondary": "#495e8a",
+            "surface-container": "#edeeef",
+            "tertiary-container": "#b75b00",
+            "on-primary": "#ffffff",
+            "on-surface": "#191c1d",
+            "inverse-primary": "#adc6ff",
+            "surface-dim": "#d9dadb",
+            "on-secondary": "#ffffff",
+            "on-error-container": "#93000a",
+            "on-secondary-fixed": "#001a42",
+            "on-secondary-container": "#405682",
+            "primary-container": "#2170e4",
+            "outline-variant": "#c2c6d6",
+            "secondary-container": "#b6ccff",
+            "background": "#f8f9fa",
+            "on-tertiary": "#ffffff",
+            "tertiary": "#924700",
+            "tertiary-fixed": "#ffdcc6",
+            "on-surface-variant": "#424754",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-fixed": "#001a42",
+            "outline": "#727785",
+            "on-secondary-fixed-variant": "#304671",
+            "on-primary-fixed-variant": "#004395",
+            "on-primary-container": "#fefcff",
+            "surface-tint": "#005ac2",
+            "on-background": "#191c1d",
+            "inverse-on-surface": "#f0f1f2",
+            "on-tertiary-container": "#fffbff",
+            "primary": "#0058be",
+            "surface-bright": "#f8f9fa",
+            "primary-fixed-dim": "#adc6ff",
+            "secondary-fixed": "#d8e2ff",
+            "error": "#ba1a1a",
+            "primary-fixed": "#d8e2ff"
+          },
+          fontFamily: {
+            "headline": ["Inter", "sans-serif"],
+            "body": ["Inter", "sans-serif"],
+            "label": ["Inter", "sans-serif"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .glass-effect {
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-14 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm dark:shadow-none border-b border-slate-200/50 dark:border-slate-800/50">
+<div class="flex items-center gap-8">
+<span class="text-lg font-bold tracking-tighter text-slate-900 dark:text-slate-50">Gearbox Engineer</span>
+<nav class="hidden md:flex items-center gap-6 h-14">
+<a class="text-sm font-medium tracking-tight text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors px-3 py-1 rounded-md" href="#">Projects</a>
+<a class="text-sm font-medium tracking-tight text-blue-700 dark:text-blue-400 border-b-2 border-blue-600 h-14 flex items-center" href="#">Calculations</a>
+<a class="text-sm font-medium tracking-tight text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors px-3 py-1 rounded-md" href="#">Simulation</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center gap-2">
+<button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+</div>
+<button class="bg-primary hover:opacity-90 text-white text-sm font-medium px-4 py-2 rounded-lg transition-all active:scale-95 shadow-md">
+        Create New Project
+      </button>
+<img alt="User Profile Avatar" class="w-8 h-8 rounded-full border border-outline-variant/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArqOhHhhF1hMm3dNBeP4Nzt9O8ohUxWQJoUa-P1FEZgJlU6xSs_4ef4yYcfbEKXmZaX0mVyxqacHkV16X-YYfuw7ysAtLK76-EDjJeVFw05bKtch2Ky2gb-2aw4bsDZaaTOVXb8vuhPplj48-2GUNBV7iB3Hpiz23-fnObpGVCSxuRX7P6BV5-xn0RBcEW6z4kPk4MshO4zEmyS1M6_RpoWmN7aONFYyaLtW9BPkY1cOLORruwMLPhTHHkK4wC0wyhvIQlNXuQTySw"/>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-14 bottom-0 flex flex-col py-4 bg-slate-50 dark:bg-slate-950 w-64 border-r border-slate-200/30 dark:border-slate-800/30 z-40">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3 mb-1">
+<div class="w-8 h-8 rounded bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm" data-icon="precision_manufacturing">precision_manufacturing</span>
+</div>
+<div>
+<h2 class="text-sm font-bold text-on-surface leading-none">Project Alpha</h2>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Gearbox Design v2.1</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-2 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+        Overview
+      </a>
+<a class="flex items-center gap-3 px-4 py-2 text-sm font-medium bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="precision_manufacturing">precision_manufacturing</span>
+        Design Tools
+      </a>
+<a class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="inventory_2">inventory_2</span>
+        Materials
+      </a>
+<a class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+        Settings
+      </a>
+</nav>
+<div class="mt-auto px-2 pt-4 border-t border-slate-200/30">
+<a class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-lg" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="menu_book">menu_book</span>
+        Documentation
+      </a>
+<a class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-lg" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="contact_support">contact_support</span>
+        Support
+      </a>
+<button class="mt-4 w-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface text-xs font-bold uppercase tracking-widest py-3 rounded-lg transition-all">
+        Export CAD
+      </button>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 mt-14 p-8 min-h-screen">
+<div class="max-w-4xl mx-auto">
+<!-- Progress Bar Section -->
+<div class="mb-12">
+<div class="flex justify-between items-end mb-4">
+<div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-primary mb-1 block">Step 1 of 5</span>
+<h1 class="text-3xl font-extrabold tracking-tight text-on-surface">Input Parameters</h1>
+</div>
+<div class="text-right">
+<span class="text-sm font-medium text-slate-500">20% Complete</span>
+</div>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="w-1/5 h-full bg-primary transition-all duration-500 ease-out"></div>
+</div>
+</div>
+<!-- Form Content with Bento-ish Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Main Form Card -->
+<div class="md:col-span-8 space-y-6">
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm border border-outline-variant/10">
+<form class="space-y-8">
+<!-- Power Input -->
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<label class="text-sm font-semibold text-on-surface flex items-center gap-2" for="power">
+                    Input Power (P)
+                    <span class="material-symbols-outlined text-[16px] text-slate-400 cursor-help" title="The total mechanical power transmitted to the input shaft">info</span>
+</label>
+<span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Required</span>
+</div>
+<div class="relative group">
+<input class="w-full bg-surface border-none rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary/30 transition-all text-on-surface font-medium placeholder:text-slate-300" id="power" name="power" placeholder="0.00" step="0.1" type="number" value="15.5"/>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">kW</div>
+</div>
+<p class="text-[11px] text-slate-500 italic">Recommended range: 0.5 - 500 kW</p>
+</div>
+<!-- Speed Input -->
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<label class="text-sm font-semibold text-on-surface flex items-center gap-2" for="speed">
+                    Input Speed (n)
+                    <span class="material-symbols-outlined text-[16px] text-slate-400 cursor-help" title="Rotational velocity of the driving gear">info</span>
+</label>
+</div>
+<div class="relative">
+<input class="w-full bg-surface border-none rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary/30 transition-all text-on-surface font-medium placeholder:text-slate-300" id="speed" name="speed" placeholder="1500" type="number" value="1450"/>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">RPM</div>
+</div>
+</div>
+<!-- Load Type Selection -->
+<div class="space-y-3">
+<label class="text-sm font-semibold text-on-surface">Load Characteristic</label>
+<div class="grid grid-cols-2 gap-4">
+<label class="relative flex flex-col items-start p-4 bg-surface rounded-xl border-2 border-primary cursor-pointer group hover:bg-primary/5 transition-all">
+<input checked="" class="hidden" name="load_type" type="radio"/>
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary" data-icon="bolt">bolt</span>
+<span class="text-sm font-bold text-on-surface">Constant</span>
+</div>
+<p class="text-[11px] text-slate-500 leading-tight">Uniform torque with minimal variations. Ideal for fans or pumps.</p>
+<div class="absolute top-3 right-3">
+<div class="w-4 h-4 rounded-full border-2 border-primary flex items-center justify-center">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+</div>
+</div>
+</label>
+<label class="relative flex flex-col items-start p-4 bg-surface rounded-xl border-2 border-transparent cursor-pointer group hover:border-outline-variant/50 transition-all">
+<input class="hidden" name="load_type" type="radio"/>
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors" data-icon="waves">waves</span>
+<span class="text-sm font-bold text-on-surface">Fluctuating</span>
+</div>
+<p class="text-[11px] text-slate-500 leading-tight">Variable torque with shocks. Suitable for crushers or excavators.</p>
+<div class="absolute top-3 right-3">
+<div class="w-4 h-4 rounded-full border-2 border-outline-variant"></div>
+</div>
+</label>
+</div>
+</div>
+<!-- Lifetime Input -->
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<label class="text-sm font-semibold text-on-surface flex items-center gap-2" for="lifetime">
+                    Design Lifetime (L)
+                  </label>
+</div>
+<div class="flex items-center gap-4">
+<input class="flex-1 accent-primary h-1.5 bg-surface-container rounded-lg appearance-none cursor-pointer" max="50000" min="1000" step="1000" type="range" value="20000"/>
+<div class="w-32 relative">
+<input class="w-full bg-surface border-none rounded-lg py-2 px-3 focus:ring-2 focus:ring-primary/30 text-sm font-bold text-on-surface" id="lifetime" name="lifetime" type="number" value="20000"/>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-bold">HRS</span>
+</div>
+</div>
+</div>
+<!-- Navigation Actions -->
+<div class="pt-6 flex items-center justify-between border-t border-outline-variant/10">
+<button class="text-sm font-bold text-slate-400 hover:text-on-surface transition-colors flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_back">arrow_back</span>
+                  Save Draft
+                </button>
+<button class="bg-gradient-to-br from-primary to-primary-container text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-primary/20 hover:opacity-95 transition-all active:scale-95 flex items-center gap-3" type="button">
+                  Next Configuration
+                  <span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</form>
+</div>
+</div>
+<!-- Sidebar / Contextual Helper -->
+<div class="md:col-span-4 space-y-6">
+<div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/10">
+<h3 class="text-xs font-black uppercase tracking-[0.15em] text-slate-400 mb-4">Design Tips</h3>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-blue-600 text-[18px]" data-icon="lightbulb">lightbulb</span>
+</div>
+<div>
+<h4 class="text-xs font-bold text-on-surface mb-1">Efficiency Ratio</h4>
+<p class="text-[11px] text-slate-500 leading-normal">High input RPM usually results in higher heat generation. Consider synthetic lubrication for speeds over 3000 RPM.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-lg bg-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-tertiary text-[18px]" data-icon="verified">verified</span>
+</div>
+<div>
+<h4 class="text-xs font-bold text-on-surface mb-1">Standard Compliance</h4>
+<p class="text-[11px] text-slate-500 leading-normal">Calculations will follow AGMA 2001-D04 standards by default for industrial applications.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="relative rounded-xl overflow-hidden aspect-[4/3] group">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="close-up of industrial gears in a precision engineering workshop with clean metallic surfaces and soft overhead lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDL2Iws45u7rC5Wb2LltDQrUyyVa_Hk62QAGwYdfWZLpdUc19FFYRVREizxcBAobyJy2lCMv4kiYozVKCMUBEIgLg-7pS8Fq65xcsOgb3CjI4WXNPOcyrKYDPV9SKhHsgJ5eqk77-3AfwYC42qBbMrur4hHHhtnEeA_dPWNvUqRJuH0bKbRZJq6de4uQcSgjwEEZc1TISuwo6xZ431CB8_ZZKz6MtagNW8I_MUdtn9BWMN0a66Z39q-Q_GAJA82hY_r0VI5JIhjJJtn"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-5">
+<span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1">Engineering Insight</span>
+<p class="text-white text-xs font-medium leading-relaxed">Gear geometry is determined by the intersection of power requirements and spatial constraints.</p>
+</div>
+</div>
+<!-- Quick Summary Micro-Widget -->
+<div class="bg-surface-container-highest/30 backdrop-blur-sm rounded-xl p-5 border border-white/40">
+<h3 class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-3">Calculation Preview</h3>
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<span class="text-xs text-slate-600">Torque Est.</span>
+<span class="text-xs font-bold font-mono">102.1 Nm</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs text-slate-600">Service Factor</span>
+<span class="text-xs font-bold font-mono text-primary">1.25</span>
+</div>
+<div class="h-[1px] bg-outline-variant/20 w-full"></div>
+<div class="flex justify-between items-center text-on-surface">
+<span class="text-xs font-bold">Estimated Module</span>
+<span class="text-xs font-black">2.5m</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile Bottom Nav (Suppressed based on rules but included as placeholder logic) -->
+<footer class="md:hidden fixed bottom-0 w-full bg-white h-16 flex items-center justify-around px-6 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+<button class="flex flex-col items-center gap-1 text-blue-700">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[10px] font-bold">Overview</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined" data-icon="precision_manufacturing">precision_manufacturing</span>
+<span class="text-[10px] font-bold">Tools</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="text-[10px] font-bold">Materials</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[10px] font-bold">Settings</span>
+</button>
+</footer>
+</body></html>

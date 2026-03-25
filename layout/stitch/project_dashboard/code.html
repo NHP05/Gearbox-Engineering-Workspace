@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gearbox Engineer - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-variant": "#e1e3e4",
+                        "secondary-fixed-dim": "#b1c6f9",
+                        "surface": "#f8f9fa",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#e7e8e9",
+                        "tertiary-fixed-dim": "#ffb786",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-tertiary-fixed": "#311400",
+                        "on-tertiary-fixed-variant": "#723600",
+                        "surface-container-low": "#f3f4f5",
+                        "inverse-surface": "#2e3132",
+                        "secondary": "#495e8a",
+                        "surface-container": "#edeeef",
+                        "tertiary-container": "#b75b00",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#191c1d",
+                        "inverse-primary": "#adc6ff",
+                        "surface-dim": "#d9dadb",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed": "#001a42",
+                        "on-secondary-container": "#405682",
+                        "primary-container": "#2170e4",
+                        "outline-variant": "#c2c6d6",
+                        "secondary-container": "#b6ccff",
+                        "background": "#f8f9fa",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#924700",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-surface-variant": "#424754",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#001a42",
+                        "outline": "#727785",
+                        "on-secondary-fixed-variant": "#304671",
+                        "on-primary-fixed-variant": "#004395",
+                        "on-primary-container": "#fefcff",
+                        "surface-tint": "#005ac2",
+                        "on-background": "#191c1d",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-tertiary-container": "#fffbff",
+                        "primary": "#0058be",
+                        "surface-bright": "#f8f9fa",
+                        "primary-fixed-dim": "#adc6ff",
+                        "secondary-fixed": "#d8e2ff",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#d8e2ff"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-14 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm dark:shadow-none border-b border-slate-200/50 dark:border-slate-800/50">
+<div class="flex items-center gap-8">
+<span class="text-lg font-bold tracking-tighter text-slate-900 dark:text-slate-50">Gearbox Engineer</span>
+<nav class="hidden md:flex gap-6 items-center h-full">
+<a class="font-sans text-sm tracking-tight font-medium text-blue-700 dark:text-blue-400 border-b-2 border-blue-600 h-14 flex items-center" href="#">Projects</a>
+<a class="font-sans text-sm tracking-tight font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors px-2 h-14 flex items-center" href="#">Calculations</a>
+<a class="font-sans text-sm tracking-tight font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors px-2 h-14 flex items-center" href="#">Simulation</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="bg-surface-container-low border-none rounded-lg py-1.5 pl-9 pr-4 text-sm focus:ring-2 focus:ring-primary/30 w-64 transition-all" placeholder="Search systems..." type="text"/>
+</div>
+<button class="bg-primary text-on-primary px-4 py-1.5 rounded-lg text-sm font-medium hover:opacity-90 transition-all active:scale-95">
+                Create New Project
+            </button>
+<div class="flex items-center gap-2 border-l border-slate-200 pl-4 ml-2">
+<button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<img alt="User Profile Avatar" class="w-8 h-8 rounded-full object-cover ml-2" data-alt="professional portrait of a senior mechanical engineer with a friendly expression in a modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJ51hcW7u6X5Il_NbuvpATCKiv03CvrVamdegoVTLeVnji51YzHd9R8T7do5GBFKkwWg0kX8BE7--_17GIwGBk-7KQgu7QR48xb580v7kL8byXUoRUS0J4pFqGTwqIuXD68Ft5-m8JbFNWsbsP1otqvOiMpwDmtLuqGeCiyW0u986XT-wZw96mpSNAXU_qc575IPSk4GhpdIVSWXWh7DQfb8jD0-nguLgxuPN4sNlSrD4ZlJ6zXGoNvou47PGV1LJldgrqhAt-NEQu"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-14 bottom-0 flex flex-col py-4 bg-slate-50 dark:bg-slate-950 h-screen w-64 border-r border-slate-200/30 dark:border-slate-800/30 recessed surface-container-low">
+<div class="px-6 mb-8 mt-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary-container rounded-xl flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined">precision_manufacturing</span>
+</div>
+<div>
+<h2 class="text-blue-700 dark:text-blue-400 font-black uppercase tracking-widest text-[10px]">Project Alpha</h2>
+<p class="text-slate-500 text-xs font-medium">Gearbox Design v2.1</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 py-2.5 px-4 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg mx-2 font-sans text-sm font-medium transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Overview</span>
+</a>
+<a class="flex items-center gap-3 py-2.5 px-4 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-lg mx-2 font-sans text-sm font-medium transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">precision_manufacturing</span>
+<span>Design Tools</span>
+</a>
+<a class="flex items-center gap-3 py-2.5 px-4 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-lg mx-2 font-sans text-sm font-medium transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span>Materials</span>
+</a>
+<a class="flex items-center gap-3 py-2.5 px-4 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-lg mx-2 font-sans text-sm font-medium transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="px-4 mt-auto space-y-4">
+<button class="w-full bg-slate-900 text-white py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all">
+<span class="material-symbols-outlined text-sm">download</span>
+                Export CAD
+            </button>
+<div class="pt-4 border-t border-slate-200/50">
+<a class="flex items-center gap-3 py-2 px-2 text-slate-500 hover:text-slate-900 text-xs font-medium" href="#">
+<span class="material-symbols-outlined text-[18px]">menu_book</span>
+<span>Documentation</span>
+</a>
+<a class="flex items-center gap-3 py-2 px-2 text-slate-500 hover:text-slate-900 text-xs font-medium" href="#">
+<span class="material-symbols-outlined text-[18px]">contact_support</span>
+<span>Support</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-14 p-8 bg-surface">
+<div class="max-w-7xl mx-auto space-y-8">
+<!-- Header Section -->
+<div class="flex justify-between items-end">
+<div>
+<h1 class="text-3xl font-bold tracking-tight text-on-surface mb-1">Engineering Dashboard</h1>
+<p class="text-secondary font-medium">Monitoring 12 active assembly configurations</p>
+</div>
+<div class="flex gap-2">
+<div class="flex -space-x-2">
+<img alt="Team member" class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="portrait of a young female mechanical engineer with glasses in a professional environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqwrip9D6t1nw_7flTP6nlbVcb9lHMr1QkKvf4mkaE9TCc1KB7bDhn-_kqDysrE07RYfxRfZawkjquGWaAleWJgGZnsSK7zDN7PFz8sz07uaxpiidWJP1jXfvBRUx3I7xgUFOyYVBSFP4wK2nHDlFxop6zhuRQRRbIFU-zCz6CHcjjiaCee-tnKCaNLv2K6yk1XpZasQnZd11Rpd5vN3dFaOGsVFqpa0Cc4PfSpK7GZUALnC4pF1ezGWpm02-nYB4GLArrhXV70HYj"/>
+<img alt="Team member" class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="portrait of a mid-career male structural engineer smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjr4QMpDOVXjfpJTJb-4vAIPMS9GdMFNZFGyEbVot-jom1uNId9NPSChyGdjRxHOb44aymgFrmloWlXsGHm37HAnQGgzDvXXHZHdBJSF-VsRx-oq_mloGguwTNpHHQtsAQEpKF54GUUIgcrp6TuWd3pM2h75IGsIw9TtrMs0krYWexZqkl-m7LkcldxuBRoFkcdexruO1-7N7QVwYWU24yvK2AHwRB6_GSf4flavceg_LVjegClUfLy-u-bp22H87mA7ROB6rumXLj"/>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600">+4</div>
+</div>
+</div>
+</div>
+<!-- Bento Grid - Project Highlights -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Large Feature Card -->
+<div class="md:col-span-2 bg-surface-container-lowest rounded-xl p-6 shadow-sm flex flex-col justify-between border border-outline-variant/10">
+<div class="flex justify-between items-start">
+<div>
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-3 inline-block">Active Simulation</span>
+<h3 class="text-xl font-bold mb-2">High-Torque Planetary System</h3>
+<p class="text-on-surface-variant text-sm max-w-md">Real-time thermal analysis of the secondary reduction stage. Current stability: 98.4%.</p>
+</div>
+<div class="w-16 h-16 bg-primary-container/20 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl">model_training</span>
+</div>
+</div>
+<div class="mt-8">
+<div class="flex justify-between text-xs font-medium text-slate-500 mb-2">
+<span>Processing Status</span>
+<span>84% Complete</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full w-[84%]"></div>
+</div>
+</div>
+</div>
+<!-- Stats Card -->
+<div class="bg-primary text-on-primary rounded-xl p-6 flex flex-col justify-between relative overflow-hidden shadow-lg">
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-9xl">settings_suggest</span>
+</div>
+<div>
+<span class="text-primary-fixed-dim font-bold text-[10px] uppercase tracking-widest">Efficiency Rating</span>
+<div class="text-4xl font-black mt-2">0.967</div>
+<p class="text-primary-fixed-dim text-xs mt-1">System-wide performance average</p>
+</div>
+<div class="bg-white/10 backdrop-blur-md rounded-lg p-3 mt-4 border border-white/10">
+<div class="flex items-center gap-2 text-xs font-medium">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+2.4% vs last revision</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Layout: Projects & Recent Designs -->
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+<!-- Project Feed (3/4 width) -->
+<div class="lg:col-span-3 space-y-6">
+<div class="flex items-center justify-between">
+<h2 class="text-lg font-bold tracking-tight">Project Overview</h2>
+<div class="flex gap-2">
+<button class="p-2 bg-surface-container rounded-lg text-slate-600 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+</button>
+<button class="p-2 bg-surface-container rounded-lg text-slate-600 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-sm">grid_view</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Project Card 1 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant/10 hover:shadow-md transition-shadow">
+<div class="flex justify-between mb-4">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-500">settings_input_component</span>
+</div>
+<div class="flex items-center gap-2 px-2 py-1 bg-green-50 rounded-full">
+<div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+<span class="text-[10px] font-bold text-green-700 uppercase tracking-tighter">Completed</span>
+</div>
+</div>
+<h4 class="font-bold text-base mb-1">Differential Gear Assembly</h4>
+<p class="text-xs text-on-surface-variant mb-4">Precision mechanical unit for autonomous vehicles. v1.04 baseline.</p>
+<div class="flex items-center justify-between pt-4 border-t border-slate-100">
+<div class="flex -space-x-1.5">
+<div class="w-6 h-6 rounded-full bg-slate-200 border border-white"></div>
+<div class="w-6 h-6 rounded-full bg-slate-300 border border-white"></div>
+</div>
+<span class="text-[10px] font-medium text-slate-400">Updated 2h ago</span>
+</div>
+</div>
+<!-- Project Card 2 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant/10 hover:shadow-md transition-shadow">
+<div class="flex justify-between mb-4">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-500">memory</span>
+</div>
+<div class="flex items-center gap-2 px-2 py-1 bg-blue-50 rounded-full">
+<div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+<span class="text-[10px] font-bold text-blue-700 uppercase tracking-tighter">In Progress</span>
+</div>
+</div>
+<h4 class="font-bold text-base mb-1">Harmonic Drive System</h4>
+<p class="text-xs text-on-surface-variant mb-4">Robotic arm actuator redesign with carbon fiber reinforcements.</p>
+<div class="flex items-center justify-between pt-4 border-t border-slate-100">
+<div class="flex -space-x-1.5">
+<div class="w-6 h-6 rounded-full bg-slate-400 border border-white"></div>
+</div>
+<span class="text-[10px] font-medium text-slate-400">Updated 14h ago</span>
+</div>
+</div>
+<!-- Project Card 3 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant/10 hover:shadow-md transition-shadow">
+<div class="flex justify-between mb-4">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-500">hub</span>
+</div>
+<div class="flex items-center gap-2 px-2 py-1 bg-blue-50 rounded-full">
+<div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+<span class="text-[10px] font-bold text-blue-700 uppercase tracking-tighter">In Progress</span>
+</div>
+</div>
+<h4 class="font-bold text-base mb-1">Turbo-Fan Gear Reducer</h4>
+<p class="text-xs text-on-surface-variant mb-4">Aerospace propulsion testing platform. Stress analysis phase.</p>
+<div class="flex items-center justify-between pt-4 border-t border-slate-100">
+<div class="flex -space-x-1.5">
+<div class="w-6 h-6 rounded-full bg-slate-200 border border-white"></div>
+<div class="w-6 h-6 rounded-full bg-slate-500 border border-white"></div>
+</div>
+<span class="text-[10px] font-medium text-slate-400">Updated 1d ago</span>
+</div>
+</div>
+<!-- Empty State / New Card -->
+<button class="bg-surface-container-low p-5 rounded-xl border-2 border-dashed border-outline-variant/30 hover:border-primary/50 group transition-all flex flex-col items-center justify-center gap-2">
+<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">add</span>
+</div>
+<span class="text-sm font-semibold text-slate-500">New Assembly</span>
+</button>
+</div>
+</div>
+<!-- Recent Designs List (1/4 width) -->
+<div class="lg:col-span-1 space-y-6">
+<h2 class="text-lg font-bold tracking-tight">Recent Designs</h2>
+<div class="space-y-4">
+<div class="flex items-center gap-3 p-3 bg-white rounded-xl shadow-sm border border-outline-variant/5">
+<div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Gear design" class="w-full h-full object-cover" data-alt="close up of metallic gears and machinery components with industrial soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpF4yyznJMeBuwBpp3W-T6gZimfGFpj4v9ZfdWX3NUhpZG3VPyn_Hhy28f8Z8rUnv2pnJBcet1TvhumLDYjW5Wou84hn6p-Jk_-slqhLdb1skZRRrAMRmfvSoCbhGpE5c862kgXf3linTW7y8QdfP6WI9PxJDJjH8S-LmrilP4af_RpwEfSQjnd4qGO2YDZ143ouVbE8kBv5w1ik7vzyVmok7TJd7yvqMUip1RkPQ_Zolvj1PpE61LUeUTaP95EcqjWYU9qawnzy8I"/>
+</div>
+<div class="flex-1 min-w-0">
+<h5 class="text-sm font-bold truncate">Pinion_V3.stl</h5>
+<p class="text-[10px] text-slate-400">Modified by you</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-sm">more_vert</span>
+</div>
+<div class="flex items-center gap-3 p-3 bg-white rounded-xl shadow-sm border border-outline-variant/5">
+<div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Drawing" class="w-full h-full object-cover" data-alt="precise technical drawing of an engine part with blueprint lines and measurements" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDohWnnramlwjxFGPbX0ILcVtJ5a0OWCqIs7yqYq7UMga9_L2pdHJP4G45TOfc9PN0gp19MNeFueUwkJBIbFdUj3MEOBXZrW1lPf2_jQKfl_wOMYR-Fs_a1QdYqZOLA2mPnjRq1ctSz_HN2xh4nH86nFs9Y6aibmvkUVV-RvIO7dUy5UCUbdh43N7cGChj94wrOAoj8s9lPXzneqCEUjW1oikKfTuKtzcLfV51c1C9saVhhMcOHjTmn-qDIrNeRxaNco1j3iRwqdfmp"/>
+</div>
+<div class="flex-1 min-w-0">
+<h5 class="text-sm font-bold truncate">Layout_21B.dwg</h5>
+<p class="text-[10px] text-slate-400">Revised yesterday</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-sm">more_vert</span>
+</div>
+<div class="flex items-center gap-3 p-3 bg-white rounded-xl shadow-sm border border-outline-variant/5">
+<div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Robotics" class="w-full h-full object-cover" data-alt="industrial robot arm performing precise assembly task in a high tech factory" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkIdzPGLjZr_RUmWG68sKdf19C9cqHkhNOHIeUq2eW5arVYIYOD9gJaBBoIfGaxxgVUVrmNFdaHXggkNm06zOTOjG2Ql7Fr6ofq5l8BP0sYmT0gYFnNtPKH13ACPBoenTsCDTnLBM2e0R8FQ8UEUhquFgWRyo61F9dSRsWgoZIepTvCin5QtD4FJ-D3VK05Y1WQIdrVaBqiGGPTr7xs7bmwK7qpeWpk_c-merxRa1VusCt8JDKuitsjCquC93HpbIn2VmsDd4mqvVh"/>
+</div>
+<div class="flex-1 min-w-0">
+<h5 class="text-sm font-bold truncate">Arm_Joint_S4.step</h5>
+<p class="text-[10px] text-slate-400">Shared with team</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-sm">more_vert</span>
+</div>
+<div class="flex items-center gap-3 p-3 bg-white rounded-xl shadow-sm border border-outline-variant/5">
+<div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Material" class="w-full h-full object-cover" data-alt="close up of carbon fiber texture with subtle light reflections and depth" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOTyQ28tZx-uxHHxRcvoY6Wj5ahAUX5VJR64ct6EXkQ9y4e0uOdBlw1LrJrbT-IqWYDbztNoksVWe-7Zo5mDD19NqncA2A0f2vPlSe-icVOda15fo8l4KRb1Me5cKEAqsVgkrizJjINGBtlbPRpSwPC8E6nCPiVw5Bm7MHOvGSncHAKI1yEZlS1Ki7G5xH4bNQ5l4wUB9Mff5qSlhL6JABtqy4ppKdj-_2x0OiCJgGBjJNRMOnwQy37zRdNTAY4A7q6ZWs9Wpl3A2G"/>
+</div>
+<div class="flex-1 min-w-0">
+<h5 class="text-sm font-bold truncate">CF_Housing.3mf</h5>
+<p class="text-[10px] text-slate-400">Ready for print</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-sm">more_vert</span>
+</div>
+</div>
+<button class="w-full py-2 text-xs font-bold text-primary uppercase tracking-widest hover:bg-primary/5 rounded-lg transition-colors">
+                        View All Files
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Logic Suppression: None needed, FAB removed for Dashboard as per instructions if contextual -->
+</body></html>
