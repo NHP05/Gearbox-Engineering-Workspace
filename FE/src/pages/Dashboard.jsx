@@ -1,6 +1,16 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('gearbox_user') || '{}');
+
+  const handleLogout = () => {
+    localStorage.removeItem('jwt_token');
+    localStorage.removeItem('gearbox_user');
+    navigate('/login', { replace: true });
+  };
+
   return (
     // Wrapper chính áp dụng màu nền Surface (#f8f9fa) và font chữ Inter
     <div className="flex h-screen bg-[#f8f9fa] font-sans text-[#191c1d] overflow-hidden">
@@ -46,6 +56,10 @@ const Dashboard = () => {
             <p className="text-sm text-slate-500 mt-1">Hôm nay bạn muốn thiết kế hộp giảm tốc nào?</p>
           </div>
           <div className="flex items-center gap-4">
+            <div className="text-right hidden md:block">
+              <p className="text-sm font-semibold text-[#191c1d]">{user.username || 'khách'}</p>
+              <p className="text-xs text-slate-500">Customer account</p>
+            </div>
             <div className="relative">
               <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
               <input 
@@ -57,6 +71,12 @@ const Dashboard = () => {
             <div className="w-10 h-10 rounded-full bg-slate-200 overflow-hidden cursor-pointer shadow-sm">
               <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Felix" alt="User" className="w-full h-full object-cover" />
             </div>
+            <button
+              onClick={handleLogout}
+              className="hidden md:inline-flex px-4 py-2 rounded-xl bg-[#191c1d] text-white text-sm font-semibold hover:opacity-90"
+            >
+              Đăng xuất
+            </button>
           </div>
         </header>
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const TOP_LINKS = ['Projects', 'Calculations', 'Simulation'];
@@ -27,6 +28,15 @@ const WizardScaffold = ({
     headerBrand,
     children,
 }) => {
+    const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem('gearbox_user') || '{}');
+
+    const handleLogout = () => {
+        localStorage.removeItem('jwt_token');
+        localStorage.removeItem('gearbox_user');
+        navigate('/login', { replace: true });
+    };
+
     return (
         <div className="bg-[#f8f9fa] min-h-screen text-[#191c1d] antialiased">
             <header className="fixed top-0 z-50 w-full h-14 px-6 flex items-center justify-between bg-white/90 backdrop-blur-xl border-b border-slate-200/60">
@@ -48,7 +58,11 @@ const WizardScaffold = ({
                     <button className="hidden md:inline-flex gradient-button text-white text-sm font-semibold px-4 py-1.5 rounded-lg">Create New Project</button>
                     <button className="p-2 rounded-full hover:bg-slate-100"><Icon name="notifications" className="text-slate-500" /></button>
                     <button className="p-2 rounded-full hover:bg-slate-100"><Icon name="help_outline" className="text-slate-500" /></button>
-                    <div className="w-8 h-8 rounded-full bg-slate-200" />
+                    <button type="button" onClick={handleLogout} className="hidden md:inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-sm font-semibold text-slate-600 hover:bg-slate-200">
+                        <span className="w-6 h-6 rounded-full bg-[#0058be] text-white flex items-center justify-center text-[10px] font-black">{(user.username || 'U').slice(0, 1).toUpperCase()}</span>
+                        <span className="max-w-28 truncate">{user.username || 'Guest'}</span>
+                    </button>
+                    <div className="w-8 h-8 rounded-full bg-slate-200 md:hidden" />
                 </div>
             </header>
 
@@ -83,6 +97,9 @@ const WizardScaffold = ({
 
                 <div className="pt-4 border-t border-slate-200/60 space-y-1">
                     <button className="w-full bg-[#0058be] text-white text-xs font-bold uppercase tracking-widest py-2.5 rounded-lg">Export CAD</button>
+                    <button type="button" onClick={handleLogout} className="w-full border border-[#c2c6d6] text-xs font-bold uppercase tracking-widest py-2.5 rounded-lg text-slate-600 hover:bg-slate-100">
+                        Logout
+                    </button>
                     <button type="button" className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-200/60">
                         <Icon name="menu_book" className="text-[20px]" />
                         <span>Documentation</span>

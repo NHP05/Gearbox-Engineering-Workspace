@@ -3,8 +3,11 @@ import { Outlet, Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
     const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem('gearbox_user') || '{}');
+
     const handleLogout = () => {
         localStorage.removeItem('jwt_token');
+        localStorage.removeItem('gearbox_user');
         navigate('/login');
     };
 
@@ -13,6 +16,7 @@ const Navbar = () => {
             <h2>Hệ thống Thiết kế Hộp Giảm Tốc</h2>
             <div>
                 <Link to="/dashboard" style={{ color: 'white', marginRight: '1rem', textDecoration: 'none' }}>Dự án của tôi</Link>
+                <span style={{ marginRight: '1rem', opacity: 0.9 }}>Xin chào, {user.username || 'khách'}</span>
                 <button onClick={handleLogout} style={{ background: 'transparent', border: '1px solid white', color: 'white', cursor: 'pointer' }}>Đăng xuất</button>
             </div>
         </nav>
