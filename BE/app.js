@@ -1,28 +1,40 @@
 const express = require('express');
-const app = express();
-const motorRoutes = require('./routes/motor.routes');
+const cors = require('cors');
 
-// Middleware để Backend đọc được JSON từ Frontend gửi lên
+// ==========================================
+// 1. IMPORT TẤT CẢ ROUTES Ở ĐẦU FILE
+// ==========================================
+const authRoutes = require('./routes/auth.routes');
+const variantRoutes = require('./routes/variant.routes');
+const calculationRoutes = require('./routes/calculation.routes');
+
+const app = express();
+
+// ==========================================
+// 2. MIDDLEWARE CHUNG
+// ==========================================
+// Bật CORS để cho phép Frontend React (Port 5173) gọi API không bị chặn
+app.use(cors()); 
+
+// Cho phép Backend đọc được dữ liệu JSON từ Frontend gửi lên
 app.use(express.json());
 
-// Gắn Route
-app.use('/api/motor', motorRoutes);
+// ==========================================
+// 3. GẮN ROUTES (Đồng nhất tiền tố /api/v1)
+// ==========================================
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/variants', variantRoutes);
+app.use('/api/v1/calculate', calculationRoutes);
 
-// Khởi động server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Hệ thống tính toán Cơ khí đang chạy tại cổng ${PORT}`);
+// Xử lý lỗi 404 cho các đường dẫn không tồn tại
+app.use((req, res) => {
+    res.status(404).json({ success: false, message: "Đường dẫn API không tồn tại" });
 });
 
-// Thêm phần này vào cuối file app.js để gắn route auth
-const authRoutes = require('./routes/auth.routes');
-// ...
-app.use('/api/v1/auth', authRoutes);
-
-// Thêm phần này vào cuối file app.js để gắn route project
-const variantRoutes = require('./routes/variant.routes');
-// ...
-app.use('/api/v1/variants', variantRoutes);
-const calculationRoutes = require('./routes/calculation.routes');
-// ...
-app.use('/api/v1/calculate', calculationRoutes);
+// ==========================================
+// 4. KHỞI ĐỘNG SERVER (Luôn nằm ở cuối cùng)
+// ==========================================
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+    console.log(`🚀 Hệ thống Backend Cơ khí đang chạy tại http://localhost:${PORT}`);
+});
