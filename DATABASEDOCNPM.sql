@@ -1,1 +1,0 @@
-CREATE DATABASE gearbox_db;
