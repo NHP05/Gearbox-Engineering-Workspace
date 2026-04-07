@@ -1,207 +1,172 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axiosClient from '../../api/axiosClient';
-const Step1_Motor = () => {
-  const navigate = useNavigate();
-  
-  // State lưu trữ dữ liệu đầu vào và kết quả
-  const [inputs, setInputs] = useState({ F: 5000, v: 1.5, etaSystem: 0.85, nCT: 60 });
-  const [results, setResults] = useState(null);
-  const [isCalculating, setIsCalculating] = useState(false);
+import PropTypes from 'prop-types';
+import WizardScaffold from './WizardScaffold';
 
-  const handleInputChange = (e) => {
-    setInputs({ ...inputs, [e.target.name]: Number(e.target.value) });
-  };
+const Step1Motor = ({ onNext }) => {
+    const [inputs, setInputs] = useState({
+        power: 15.5,
+        speed: 1450,
+        loadType: 'constant',
+        life: 20000,
+    });
 
-  const handleCalculate = () => {
-    setIsCalculating(true);
-    // Mô phỏng gọi API Backend mất 0.8 giây
-    setTimeout(() => {
-      // Công thức: P_ct = (F * v) / 1000, P_dc = P_ct / etaSystem, T = 9550 * P_dc / nCT
-      const P_ct = (inputs.F * inputs.v) / 1000;
-      const P_dc = P_ct / inputs.etaSystem;
-      const Torque = (9550 * P_dc) / inputs.nCT;
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setInputs((prev) => ({
+            ...prev,
+            [name]: name === 'loadType' ? value : Number(value),
+        }));
+    };
 
-      setResults({
-        P_ct_kW: P_ct.toFixed(2),
-        P_dc_kW: P_dc.toFixed(2),
-        Torque_Nm: Torque.toFixed(2)
-      });
-      setIsCalculating(false);
-    }, 800);
-  };
+    return (
+        <WizardScaffold activeKey="parameters">
+            <div className="p-8">
+                <div className="max-w-6xl mx-auto">
+                    <div className="mb-12">
+                        <div className="flex justify-between items-end mb-4">
+                            <div>
+                                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0058be] block mb-1">Step 1 of 5</span>
+                                <h1 className="text-3xl font-extrabold tracking-tight text-[#191c1d]">Input Parameters</h1>
+                            </div>
+                            <span className="text-sm font-medium text-slate-500">20% Complete</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-[#edeeef] rounded-full overflow-hidden">
+                            <div className="h-full w-1/5 bg-[#0058be]" />
+                        </div>
+                    </div>
 
-  return (
-    <div className="max-w-6xl mx-auto space-y-8">
-      
-      {/* ================= THREAD TIẾN ĐỘ (PROGRESS STEPPER) ================= */}
-      <div className="flex items-center gap-3 mb-10 overflow-x-auto pb-2">
-        <div className="flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-full border border-blue-100">
-          <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold shadow-sm">1</div>
-          <span className="text-sm font-bold text-blue-700">Chọn Động cơ</span>
-        </div>
-        <div className="h-px bg-slate-200 w-8"></div>
-        
-        <div className="flex items-center gap-2 px-2 opacity-50">
-          <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 text-xs font-bold">2</div>
-          <span className="text-sm font-medium text-slate-600">Bộ truyền Đai</span>
-        </div>
-        <div className="h-px bg-slate-200 w-8"></div>
-        
-        <div className="flex items-center gap-2 px-2 opacity-50">
-          <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 text-xs font-bold">3</div>
-          <span className="text-sm font-medium text-slate-600">Bánh Răng</span>
-        </div>
-      </div>
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                        <div className="md:col-span-8 space-y-6">
+                            <div className="bg-white p-8 rounded-xl shadow-sm border border-[#c2c6d6]/20">
+                                <form className="space-y-8">
+                                    <div className="space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <label htmlFor="power" className="text-sm font-semibold text-[#191c1d]">Input Power (P)</label>
+                                            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Required</span>
+                                        </div>
+                                        <div className="relative">
+                                            <input
+                                                id="power"
+                                                name="power"
+                                                type="number"
+                                                step="0.1"
+                                                value={inputs.power}
+                                                onChange={handleChange}
+                                                className="w-full bg-[#f8f9fa] border-none rounded-lg py-3 px-4 focus:ring-2 focus:ring-[#0058be]/30"
+                                            />
+                                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">kW</span>
+                                        </div>
+                                        <p className="text-[11px] text-slate-500 italic">Recommended range: 0.5 - 500 kW</p>
+                                    </div>
 
-      {/* ================= KHU VỰC CHÍNH (INPUT & OUTPUT) ================= */}
-      <div className="flex flex-col lg:flex-row gap-8">
-        
-        {/* CỘT TRÁI: FORM NHẬP LIỆU */}
-        <div className="flex-1 bg-white p-8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.02)] border border-slate-100/50">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="p-2.5 bg-slate-50 text-slate-600 rounded-lg">
-              <span className="material-symbols-outlined">tune</span>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-800">Thông số Máy công tác</h3>
-              <p className="text-xs text-slate-400 mt-0.5">Nhập số liệu từ đề bài đồ án của bạn</p>
-            </div>
-          </div>
+                                    <div className="space-y-2">
+                                        <label htmlFor="speed" className="text-sm font-semibold text-[#191c1d]">Input Speed (n)</label>
+                                        <div className="relative">
+                                            <input
+                                                id="speed"
+                                                name="speed"
+                                                type="number"
+                                                value={inputs.speed}
+                                                onChange={handleChange}
+                                                className="w-full bg-[#f8f9fa] border-none rounded-lg py-3 px-4 focus:ring-2 focus:ring-[#0058be]/30"
+                                            />
+                                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">RPM</span>
+                                        </div>
+                                    </div>
 
-          <div className="space-y-5">
-            {/* Input Group 1 */}
-            <div>
-              <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Lực vòng F (N)</label>
-              <input 
-                type="number" name="F" value={inputs.F} onChange={handleInputChange}
-                className="w-full px-4 py-3.5 bg-slate-50/50 rounded-xl border-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] focus:bg-blue-50/30 focus:ring-2 focus:ring-blue-500/20 outline-none text-slate-800 font-semibold transition-all"
-              />
-            </div>
+                                    <div className="space-y-3">
+                                        <p className="text-sm font-semibold text-[#191c1d]">Load Characteristic</p>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <label className={`relative p-4 bg-[#f8f9fa] rounded-xl border-2 cursor-pointer ${inputs.loadType === 'constant' ? 'border-[#0058be]' : 'border-transparent'}`}>
+                                                <input type="radio" name="loadType" value="constant" checked={inputs.loadType === 'constant'} onChange={handleChange} className="hidden" />
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="material-symbols-outlined text-[#0058be]">bolt</span>
+                                                    <span className="text-sm font-bold">Constant</span>
+                                                </div>
+                                                <p className="text-[11px] text-slate-500">Uniform torque with minimal variations. Ideal for fans or pumps.</p>
+                                            </label>
 
-            {/* Input Group 2 */}
-            <div>
-              <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Vận tốc v (m/s)</label>
-              <input 
-                type="number" name="v" value={inputs.v} onChange={handleInputChange} step="0.1"
-                className="w-full px-4 py-3.5 bg-slate-50/50 rounded-xl border-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] focus:bg-blue-50/30 focus:ring-2 focus:ring-blue-500/20 outline-none text-slate-800 font-semibold transition-all"
-              />
-            </div>
+                                            <label className={`relative p-4 bg-[#f8f9fa] rounded-xl border-2 cursor-pointer ${inputs.loadType === 'fluctuating' ? 'border-[#0058be]' : 'border-transparent'}`}>
+                                                <input type="radio" name="loadType" value="fluctuating" checked={inputs.loadType === 'fluctuating'} onChange={handleChange} className="hidden" />
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="material-symbols-outlined text-slate-400">waves</span>
+                                                    <span className="text-sm font-bold">Fluctuating</span>
+                                                </div>
+                                                <p className="text-[11px] text-slate-500">Variable torque with shocks. Suitable for crushers or excavators.</p>
+                                            </label>
+                                        </div>
+                                    </div>
 
-            {/* Input Group 3 */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Hiệu suất (η)</label>
-                <input 
-                  type="number" name="etaSystem" value={inputs.etaSystem} onChange={handleInputChange} step="0.01"
-                  className="w-full px-4 py-3.5 bg-slate-50/50 rounded-xl border-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] focus:bg-blue-50/30 focus:ring-2 focus:ring-blue-500/20 outline-none text-slate-800 font-semibold transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Tốc độ n_ct (v/p)</label>
-                <input 
-                  type="number" name="nCT" value={inputs.nCT} onChange={handleInputChange}
-                  className="w-full px-4 py-3.5 bg-slate-50/50 rounded-xl border-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] focus:bg-blue-50/30 focus:ring-2 focus:ring-blue-500/20 outline-none text-slate-800 font-semibold transition-all"
-                />
-              </div>
-            </div>
-          </div>
+                                    <div className="space-y-2">
+                                        <label htmlFor="life" className="text-sm font-semibold text-[#191c1d]">Design Lifetime (L)</label>
+                                        <div className="flex items-center gap-4">
+                                            <input
+                                                type="range"
+                                                min="1000"
+                                                max="50000"
+                                                step="1000"
+                                                name="life"
+                                                value={inputs.life}
+                                                onChange={handleChange}
+                                                className="flex-1 accent-[#0058be]"
+                                            />
+                                            <div className="w-32 relative">
+                                                <input
+                                                    id="life"
+                                                    name="life"
+                                                    type="number"
+                                                    value={inputs.life}
+                                                    onChange={handleChange}
+                                                    className="w-full bg-[#f8f9fa] border-none rounded-lg py-2 px-3 text-sm font-bold"
+                                                />
+                                                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-bold">HRS</span>
+                                            </div>
+                                        </div>
+                                    </div>
 
-          <button 
-            onClick={handleCalculate} 
-            disabled={isCalculating}
-            className="mt-8 w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all shadow-[0_4px_15px_rgba(37,99,235,0.2)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.3)] flex justify-center items-center gap-2 disabled:bg-slate-300 disabled:shadow-none"
-          >
-            {isCalculating ? (
-              <span className="material-symbols-outlined animate-spin">refresh</span>
-            ) : (
-              <span className="material-symbols-outlined">memory</span>
-            )}
-            {isCalculating ? "Đang xử lý thuật toán..." : "Phân tích Thông số"}
-          </button>
-        </div>
+                                    <div className="pt-6 flex items-center justify-between border-t border-[#c2c6d6]/20">
+                                        <button type="button" className="text-sm font-bold text-slate-400 hover:text-[#191c1d]">Save Draft</button>
+                                        <button type="button" onClick={onNext} className="gradient-button text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-[#0058be]/20 flex items-center gap-3">
+                                            Next Configuration
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
 
-        {/* CỘT PHẢI: KẾT QUẢ ĐẦU RA */}
-        <div className="flex-1 flex flex-col bg-[#f1f5f9] p-8 rounded-2xl border border-slate-200/60 relative overflow-hidden">
-          {/* Background pattern nhẹ (Tùy chọn) */}
-          <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none">
-            <span className="material-symbols-outlined text-[150px]">settings</span>
-          </div>
+                        <div className="md:col-span-4 space-y-6">
+                            <div className="bg-white rounded-xl p-6 border border-[#c2c6d6]/20">
+                                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">Design Tips</h3>
+                                <div className="space-y-3">
+                                    <div className="p-3 bg-[#f3f4f5] rounded-lg">
+                                        <p className="text-xs font-bold">Efficiency Ratio</p>
+                                        <p className="text-[11px] text-slate-500 mt-1">Use synthetic lubrication for speed above 3000 RPM.</p>
+                                    </div>
+                                    <div className="p-3 bg-[#f3f4f5] rounded-lg">
+                                        <p className="text-xs font-bold">Standard Compliance</p>
+                                        <p className="text-[11px] text-slate-500 mt-1">Calculated using AGMA 2001-D04 assumptions.</p>
+                                    </div>
+                                </div>
+                            </div>
 
-          <div className="flex items-center gap-3 mb-8 relative z-10">
-            <div className="p-2.5 bg-white text-green-600 rounded-lg shadow-sm">
-              <span className="material-symbols-outlined">analytics</span>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-800">Kết quả Động cơ</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Dữ liệu tính toán lõi</p>
-            </div>
-          </div>
-
-          {results ? (
-            // Trạng thái đã có kết quả (Hiệu ứng Lifted Cards)
-            <div className="space-y-4 relative z-10 flex-1 flex flex-col">
-              
-              <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center group hover:border-blue-200 transition-colors">
-                <div>
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Công suất Máy công tác</p>
-                  <p className="text-xs text-slate-400 font-mono">P_ct = (F × v) / 1000</p>
+                            <div className="bg-white rounded-xl p-6 border border-[#c2c6d6]/20">
+                                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">Calculation Preview</h3>
+                                <div className="space-y-3 text-sm">
+                                    <div className="flex justify-between"><span>Torque Est.</span><strong>102.1 Nm</strong></div>
+                                    <div className="flex justify-between"><span>Service Factor</span><strong>1.25</strong></div>
+                                    <div className="flex justify-between"><span>Estimated Module</span><strong>2.5 m</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className="text-right">
-                  <span className="text-2xl font-black text-slate-800">{results.P_ct_kW}</span>
-                  <span className="text-sm font-bold text-slate-400 ml-1">kW</span>
-                </div>
-              </div>
-
-              <div className="bg-white p-5 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.04)] border-2 border-blue-100 flex justify-between items-center relative overflow-hidden">
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500"></div>
-                <div>
-                  <p className="text-[11px] font-bold text-blue-600 uppercase tracking-wider mb-1">Công suất Động cơ (Yêu cầu)</p>
-                  <p className="text-xs text-slate-400 font-mono">P_dc = P_ct / η</p>
-                </div>
-                <div className="text-right">
-                  <span className="text-3xl font-black text-blue-700">{results.P_dc_kW}</span>
-                  <span className="text-sm font-bold text-blue-400 ml-1">kW</span>
-                </div>
-              </div>
-
-              <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center group hover:border-blue-200 transition-colors">
-                <div>
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Mô-men xoắn</p>
-                  <p className="text-xs text-slate-400 font-mono">T = 9550 × P_dc / n_ct</p>
-                </div>
-                <div className="text-right">
-                  <span className="text-2xl font-black text-slate-800">{results.Torque_Nm}</span>
-                  <span className="text-sm font-bold text-slate-400 ml-1">N.m</span>
-                </div>
-              </div>
-
-              <div className="mt-auto pt-8">
-                <button 
-                  onClick={() => navigate('/wizard/belt')} // Chuyển sang route bộ truyền đai
-                  className="w-full py-4 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold transition-all shadow-md flex justify-center items-center gap-2"
-                >
-                  Tiếp tục: Bước 2 (Bộ truyền Đai)
-                  <span className="material-symbols-outlined">arrow_forward</span>
-                </button>
-              </div>
-
             </div>
-          ) : (
-            // Trạng thái Trống (Empty State)
-            <div className="flex-1 flex flex-col items-center justify-center text-center px-6 relative z-10">
-              <div className="w-20 h-20 bg-slate-200/50 rounded-full flex items-center justify-center mb-4">
-                <span className="material-symbols-outlined text-4xl text-slate-400">bolt</span>
-              </div>
-              <h4 className="text-slate-600 font-bold mb-2">Chưa có dữ liệu</h4>
-              <p className="text-sm text-slate-400 max-w-[250px]">Vui lòng nhập thông số máy công tác bên trái và bấm phân tích để xem kết quả chọn động cơ.</p>
-            </div>
-          )}
-        </div>
-
-      </div>
-    </div>
-  );
+        </WizardScaffold>
+    );
 };
 
-export default Step1_Motor;
+Step1Motor.propTypes = {
+    onNext: PropTypes.func.isRequired,
+};
+
+export default Step1Motor;
