@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const TOP_LINKS = ['Projects', 'Calculations', 'Simulation'];
+const TOP_LINKS = ['Projects', 'calculates', 'Simulation'];
 
 const SIDE_LINKS = [
     { key: 'parameters', icon: 'settings_input_component', label: 'Input Parameters' },
@@ -47,7 +47,7 @@ const WizardScaffold = ({
                             <button
                                 key={item}
                                 type="button"
-                                className={`text-sm font-medium tracking-tight px-2 py-1 rounded ${item === 'Calculations' ? 'text-blue-700 border-b-2 border-blue-600' : 'text-slate-500 hover:bg-slate-100'}`}
+                                className={`text-sm font-medium tracking-tight px-2 py-1 rounded ${item === 'calculates' ? 'text-blue-700 border-b-2 border-blue-600' : 'text-slate-500 hover:bg-slate-100'}`}
                             >
                                 {item}
                             </button>

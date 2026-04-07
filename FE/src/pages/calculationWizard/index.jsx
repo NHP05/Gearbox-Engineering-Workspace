@@ -6,7 +6,7 @@ import Step3TransmissionDesign from './Step3_TransmissionDesign';
 import Step4ShaftBearing from './Step4_ShaftBearing';
 import Step5ValidationAnalysis from './Step5_ValidationAnalysis';
 
-const CalculationWizard = () => {
+const calculateWizard = () => {
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(1);
 
@@ -53,4 +53,4 @@ const CalculationWizard = () => {
     );
 };
 
-export default CalculationWizard;
+export default calculateWizard;

@@ -2,14 +2,20 @@ const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
 const sequelize = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASS,
+    process.env.DB_NAME, 
+    process.env.DB_USER, 
+    process.env.DB_PASSWORD, 
     {
         host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
         dialect: 'mysql',
-        logging: false
+        dialectOptions: {
+            ssl: {
+                rejectUnauthorized: false // Cho phép kết nối SSL mà không cần file cert cục bộ
+            }
+        },
+        logging: false // Tắt log SQL để terminal sạch hơn
     }
 );
 
-module.exports = sequelize; // Xuất biến này ra để các file Model dùng chung
+module.exports = sequelize;

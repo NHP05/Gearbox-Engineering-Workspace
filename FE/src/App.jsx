@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import MainLayout from './components/Layout/MainLayout';
 import Dashboard from './pages/Dashboard';
-import CalculationWizard from './pages/calculationWizard';
+import calculateWizard from './pages/calculateWizard';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
@@ -32,7 +32,7 @@ function App() {
                     path="/wizard"
                     element={(
                         <RequireAuth>
-                            <CalculationWizard />
+                            <calculateWizard />
                         </RequireAuth>
                     )}
                 />

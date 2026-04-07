@@ -1,3 +1,4 @@
+CREATE DATABASE IF NOT EXISTS gearbox_db;
 -- 1. Chọn đúng cơ sở dữ liệu
 USE do_an_co_khi;
 

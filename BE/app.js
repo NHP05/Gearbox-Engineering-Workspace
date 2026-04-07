@@ -17,14 +17,14 @@ app.use(express.json());
 const motorRoutes = require('./routes/motor.routes');
 const authRoutes = require('./routes/auth.routes');
 const variantRoutes = require('./routes/variant.routes');
-const calculateRoutes = require('./routes/calculate.routes'); // Tuyến đường của Lâm
+const calculateRoutes = require('./routes/calculation.routes'); // Tuyến đường của Lâm
 
 // ==========================================
 // 3. GẮN ROUTES
 // ==========================================
 app.use('/api/motor', motorRoutes);
 app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/variants', variantRoutes);
+app.use('/api/v1/variant', variantRoutes);
 app.use('/api/v1/calculate', calculateRoutes);
 
 // Xử lý lỗi 404 (Của bạn kia)

@@ -1,6 +1,6 @@
 ﻿# CNPM DADN - Gearbox Engineering Workspace
 
-This repository is a workspace for mechanical drivetrain design and calculation tasks (motor selection, transmission ratio, and operating parameters). It is organized into a backend API, a frontend UI, and layout prototypes for each workflow step.
+This repository is a workspace for mechanical drivetrain design and calculate tasks (motor selection, transmission ratio, and operating parameters). It is organized into a backend API, a frontend UI, and layout prototypes for each workflow step.
 
 ## 1. Quick Overview
 
@@ -12,7 +12,7 @@ This repository is a workspace for mechanical drivetrain design and calculation 
 
 | Area | Stack | Responsibility |
 |---|---|---|
-| `BE/` | Node.js + Express | API and engineering calculation logic |
+| `BE/` | Node.js + Express | API and engineering calculate logic |
 | `FE/` | React + Vite | Web user interface |
 | `layout/stitch/` | HTML prototypes + design docs | UX flow drafts and visual direction |
 | `DB/` | Placeholder | Future database integration |
@@ -153,7 +153,7 @@ Sample request body:
 ```
 
 Notes:
-- The service/controller calculation flow exists.
+- The service/controller calculate flow exists.
 - The motor lookup model (`BE/models/motor.model.js`) is still empty and should implement `findSuitableMotor` for real lookup behavior.
 
 ## 7. .gitignore and node_modules Notes
@@ -178,7 +178,7 @@ What this means:
 - Add scripts in `BE/package.json`:
   - `"start": "node app.js"`
   - `"dev": "nodemon app.js"` (if using nodemon)
-- Consolidate the duplicate/draft calculation route flow (`server.js` and `routes/calculateRoutes.js`).
+- Consolidate the duplicate/draft calculate route flow (`server.js` and `routes/calculateRoutes.js`).
 - Connect FE to real API calls (for example with a dedicated `FE/services/api.js`).
 
 ---

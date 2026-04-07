@@ -1,4 +1,4 @@
-const DesignVariant = require('../models/variants.model');
+const DesignVariant = require('../models/variant.model');
 
 // [POST] Lưu một phương án tính toán mới
 const saveVariant = async (req, res) => {
@@ -25,19 +25,19 @@ const saveVariant = async (req, res) => {
 };
 
 // [GET] Lấy danh sách các phương án của 1 dự án để So sánh
-const getVariantsByProject = async (req, res) => {
+const getvariantByProject = async (req, res) => {
     try {
         const { projectId } = req.params;
 
-        const variants = await DesignVariant.findAll({
+        const variant = await DesignVariant.findAll({
             where: { project_id: projectId },
             order: [['createdAt', 'DESC']]
         });
 
-        return res.status(200).json({ success: true, data: variants });
+        return res.status(200).json({ success: true, data: variant });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
 
-module.exports = { saveVariant, getVariantsByProject };
+module.exports = { saveVariant, getvariantByProject };

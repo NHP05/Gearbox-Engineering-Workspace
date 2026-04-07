@@ -14,11 +14,11 @@ const DesignVariant = sequelize.define('DesignVariant', {
         comment: 'Chứa JSON data của Động cơ, Đai, Răng, Trục'
     }
 }, {
-    tableName: 'design_variants',
+    tableName: 'design_variant',
     timestamps: true
 });
 
-// Quan hệ: 1 Project có nhiều Design Variants
+// Quan hệ: 1 Project có nhiều Design variant
 Project.hasMany(DesignVariant, { foreignKey: 'project_id', onDelete: 'CASCADE' });
 DesignVariant.belongsTo(Project, { foreignKey: 'project_id' });
 

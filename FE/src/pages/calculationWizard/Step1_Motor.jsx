@@ -150,7 +150,7 @@ const Step1Motor = ({ onNext }) => {
                             </div>
 
                             <div className="bg-white rounded-xl p-6 border border-[#c2c6d6]/20">
-                                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">Calculation Preview</h3>
+                                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">calculate Preview</h3>
                                 <div className="space-y-3 text-sm">
                                     <div className="flex justify-between"><span>Torque Est.</span><strong>102.1 Nm</strong></div>
                                     <div className="flex justify-between"><span>Service Factor</span><strong>1.25</strong></div>
