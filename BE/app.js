@@ -1,38 +1,48 @@
 const express = require('express');
-const { Sequelize } = require('sequelize'); // <-- DÒNG QUAN TRỌNG NHẤT
+const cors = require('cors'); // Của bạn kia (giúp kết nối Frontend)
+const { Sequelize } = require('sequelize'); // Của Lâm
 require('dotenv').config();
 
 const app = express();
 
-// Middleware để đọc JSON
+// ==========================================
+// 1. MIDDLEWARE CHUNG
+// ==========================================
+app.use(cors()); 
 app.use(express.json());
 
-// Import Routes
+// ==========================================
+// 2. IMPORT TẤT CẢ ROUTES
+// ==========================================
 const motorRoutes = require('./routes/motor.routes');
 const authRoutes = require('./routes/auth.routes');
 const variantRoutes = require('./routes/variant.routes');
-const calculateRoutes = require('./routes/calculate.routes');
+const calculateRoutes = require('./routes/calculate.routes'); // Tuyến đường của Lâm
 
-// Gắn Route
+// ==========================================
+// 3. GẮN ROUTES
+// ==========================================
 app.use('/api/motor', motorRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/variants', variantRoutes);
 app.use('/api/v1/calculate', calculateRoutes);
 
-// --- KẾT NỐI DATABASE MYSQL ---
-// ... (Các đoạn require và app.use ở trên giữ nguyên)
+// Xử lý lỗi 404 (Của bạn kia)
+app.use((req, res) => {
+    res.status(404).json({ success: false, message: "Đường dẫn API không tồn tại" });
+});
 
-const sequelize = require('./config/database'); // Gọi file cấu hình vừa tạo
+// ==========================================
+// 4. KẾT NỐI MYSQL & KHỞI ĐỘNG SERVER
+// ==========================================
+const sequelize = require('./config/database'); // File cấu hình của Lâm
 const PORT = process.env.PORT || 3000;
 
-// Chạy kết nối và khởi động server
 sequelize.sync({ alter: true })
     .then(() => {
         console.log(`🎉 Đã kết nối thành công với MySQL Local (Database: ${process.env.DB_NAME})!`);
-        
-        // Chỉ khi nối DB thành công mới chạy Server
         app.listen(PORT, () => {
-            console.log(`🚀 Hệ thống tính toán Cơ khí đang chạy tại cổng ${PORT}`);
+            console.log(`🚀 Hệ thống Backend Cơ khí đang chạy tại cổng ${PORT}`);
         });
     })
     .catch((err) => {

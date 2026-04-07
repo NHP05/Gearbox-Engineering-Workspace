@@ -1,7 +1,10 @@
 /* src/index.css */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --primary: #0056b3;
@@ -22,6 +25,15 @@
 body {
   background-color: var(--bg-light);
   color: var(--text-main);
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+.gradient-button {
+  background: linear-gradient(135deg, #0058be 0%, #2170e4 100%);
 }
 
 /* Navbar & Footer */
