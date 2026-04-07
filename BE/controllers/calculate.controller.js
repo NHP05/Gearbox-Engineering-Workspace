@@ -4,12 +4,15 @@ const gearService = require('../services/gear.service');
 const shaftService = require('../services/shaft.service');
 
 // Bước 1: Tính Động Cơ
-const calcMotor = (req, res) => {
+// THÊM CHỮ async VÀO ĐÂY
+const calcMotor = async (req, res) => {
     try {
-        const { F, v, etaSystem, nCT } = req.body;
-        if (!F || !v) return res.status(400).json({ success: false, message: "Thiếu lực F hoặc vận tốc v" });
+        const { F, v, nCT, efficiencies } = req.body;
+        if (!F || !v || !nCT) return res.status(400).json({ success: false, message: "Thiếu F, v hoặc nCT" });
 
-        const result = motorService.calculateMotor(F, v, etaSystem, nCT);
+        const P_ct = (F * v) / 1000;
+        const result = await motorService.calculateMotor(P_ct, nCT, efficiencies);
+        
         return res.status(200).json({ success: true, data: result });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
@@ -17,10 +20,11 @@ const calcMotor = (req, res) => {
 };
 
 // Bước 2: Tính Bộ truyền đai
-const calcBelt = (req, res) => {
+const calcBelt = async (req, res) => {
     try {
         const { uBelt, d1, power, n1 } = req.body;
-        const result = beltService.calculateBeltDrive(uBelt, d1, power, n1);
+        // Gọi Service chờ lấy dữ liệu từ bảng Belts trong MySQL
+        const result = await beltService.calculateBeltDrive(uBelt, d1, power, n1);
         return res.status(200).json({ success: true, data: result });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
@@ -28,21 +32,20 @@ const calcBelt = (req, res) => {
 };
 
 // Bước 3: Tính Bánh răng Côn (Cấp Nhanh)
-const calcBevelGear = (req, res) => {
+const calcBevelGear = async (req, res) => {
     try {
-        const { T1, u1, sigmaH, K_Hbeta, K_be } = req.body;
-        const result = gearService.calculateBevelGear(T1, u1, sigmaH, K_Hbeta, K_be);
+        const { T1, u1, materialName } = req.body; 
+        const result = await gearService.calculateBevelGear(T1, u1, materialName);
         return res.status(200).json({ success: true, data: result });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
-
 // Bước 4: Tính Bánh răng Trụ (Cấp Chậm)
-const calcSpurGear = (req, res) => {
+const calcSpurGear = async (req, res) => {
     try {
-        const { T2, u2, sigmaH, K_Hbeta, psi_ba } = req.body;
-        const result = gearService.calculateSpurGear(T2, u2, sigmaH, K_Hbeta, psi_ba);
+        const { T2, u2, materialName } = req.body;
+        const result = await gearService.calculateSpurGear(T2, u2, materialName);
         return res.status(200).json({ success: true, data: result });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
@@ -50,10 +53,10 @@ const calcSpurGear = (req, res) => {
 };
 
 // Bước 5: Tính Trục sơ bộ
-const calcShaft = (req, res) => {
+const calcShaft = async (req, res) => {
     try {
-        const { T, tauAllow, Mx, My, aw } = req.body;
-        const result = shaftService.calculateShaft(T, tauAllow, Mx, My, aw);
+        const { T, Mx, My, materialName } = req.body;
+        const result = await shaftService.calculateShaft(T, Mx, My, materialName);
         return res.status(200).json({ success: true, data: result });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });

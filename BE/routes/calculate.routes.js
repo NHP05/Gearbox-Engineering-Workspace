@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const calcController = require('../controllers/calculation.controller');
+const calcController = require('../controllers/calculate.controller');
 const { verifyToken } = require('../middlewares/auth.middleware');
 
 // Các Endpoint API tương ứng với từng bước trên UI Wizard của React

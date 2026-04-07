@@ -1,4 +1,4 @@
-const DesignVariant = require('../models/variant.model');
+const DesignVariant = require('../models/variants.model');
 
 // [POST] Lưu một phương án tính toán mới
 const saveVariant = async (req, res) => {

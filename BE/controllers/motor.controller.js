@@ -1,6 +1,6 @@
 const motorService = require('../services/motor.service');
 
-const getMotorCalculation = async (req, res) => {
+const getMotorcalculate = async (req, res) => {
     try {
         // Lấy dữ liệu người dùng nhập từ Frontend (req.body) [cite: 94]
         const { P_ct, n_ct, efficiencies } = req.body;
@@ -27,5 +27,5 @@ const getMotorCalculation = async (req, res) => {
 };
 
 module.exports = {
-    getMotorCalculation
+    getMotorcalculate
 };

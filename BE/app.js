@@ -1,28 +1,40 @@
 const express = require('express');
-const app = express();
-const motorRoutes = require('./routes/motor.routes');
+const { Sequelize } = require('sequelize'); // <-- DÒNG QUAN TRỌNG NHẤT
+require('dotenv').config();
 
-// Middleware để Backend đọc được JSON từ Frontend gửi lên
+const app = express();
+
+// Middleware để đọc JSON
 app.use(express.json());
+
+// Import Routes
+const motorRoutes = require('./routes/motor.routes');
+const authRoutes = require('./routes/auth.routes');
+const variantRoutes = require('./routes/variant.routes');
+const calculateRoutes = require('./routes/calculate.routes');
 
 // Gắn Route
 app.use('/api/motor', motorRoutes);
-
-// Khởi động server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Hệ thống tính toán Cơ khí đang chạy tại cổng ${PORT}`);
-});
-
-// Thêm phần này vào cuối file app.js để gắn route auth
-const authRoutes = require('./routes/auth.routes');
-// ...
 app.use('/api/v1/auth', authRoutes);
-
-// Thêm phần này vào cuối file app.js để gắn route project
-const variantRoutes = require('./routes/variant.routes');
-// ...
 app.use('/api/v1/variants', variantRoutes);
-const calculationRoutes = require('./routes/calculation.routes');
-// ...
-app.use('/api/v1/calculate', calculationRoutes);
+app.use('/api/v1/calculate', calculateRoutes);
+
+// --- KẾT NỐI DATABASE MYSQL ---
+// ... (Các đoạn require và app.use ở trên giữ nguyên)
+
+const sequelize = require('./config/database'); // Gọi file cấu hình vừa tạo
+const PORT = process.env.PORT || 3000;
+
+// Chạy kết nối và khởi động server
+sequelize.sync({ alter: true })
+    .then(() => {
+        console.log(`🎉 Đã kết nối thành công với MySQL Local (Database: ${process.env.DB_NAME})!`);
+        
+        // Chỉ khi nối DB thành công mới chạy Server
+        app.listen(PORT, () => {
+            console.log(`🚀 Hệ thống tính toán Cơ khí đang chạy tại cổng ${PORT}`);
+        });
+    })
+    .catch((err) => {
+        console.error("❌ Lỗi kết nối MySQL:", err);
+    });
