@@ -27,25 +27,10 @@ function App() {
                 <Route path="/" element={<Navigate to="/wizard" replace />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-
-                <Route
-                    path="/wizard"
-                    element={(
-                        <RequireAuth>
-                            <CalculationWizard />
-                        </RequireAuth>
-                    )}
-                />
+                <Route path="/wizard" element={<RequireAuth><CalculationWizard /></RequireAuth>} />
 
                 <Route element={<MainLayout />}>
-                    <Route
-                        path="/dashboard"
-                        element={(
-                            <RequireAuth>
-                                <Dashboard />
-                            </RequireAuth>
-                        )}
-                    />
+                    <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
                 </Route>
             </Routes>
         </BrowserRouter>
