@@ -1,15 +1,20 @@
 const { Sequelize } = require('sequelize');
-require('dotenv').config();
 
-const sequelize = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASS,
-    {
-        host: process.env.DB_HOST,
-        dialect: 'mysql',
-        logging: false
-    }
-);
+// Thông số chuẩn của XAMPP: user là 'root', pass là chuỗi rỗng ''
+const sequelize = new Sequelize('gearbox_db', 'root', '', {
+    host: '127.0.0.1', // Dùng 127.0.0.1 sẽ ổn định hơn localhost
+    dialect: 'mysql', 
+    logging: false, 
+    port: 3636      
+});
 
-module.exports = sequelize; // Xuất biến này ra để các file Model dùng chung
+// Kiểm tra kết nối
+sequelize.authenticate()
+    .then(() => {
+        console.log('✅ Kết nối XAMPP MySQL thành công!');
+    })
+    .catch(err => {
+        console.error('❌ Lỗi kết nối Database:', err.message);
+    });
+
+module.exports = sequelize;

@@ -1,14 +1,44 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axiosClient from '../api/axiosClient';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('gearbox_user') || '{}');
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axiosClient.get('/project/my-projects');
+        setProjects(response.data.data || []);
+      } catch (err) {
+        setError('Lỗi tải danh sách dự án');
+        // Mock data nếu API fail
+        setProjects([
+          { id: 1, name: 'Dự án Gearbox Motor 15kW', createdAt: '2026-04-01', status: 'In Progress' },
+          { id: 2, name: 'Transmission System Heavy Duty', createdAt: '2026-03-28', status: 'Completed' },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('jwt_token');
     localStorage.removeItem('gearbox_user');
     navigate('/login', { replace: true });
+  };
+
+  const handleStartWizard = (projectId = null) => {
+    if (projectId) {
+      localStorage.setItem('current_project', projectId);
+    }
+    navigate('/wizard/motor');
   };
 
   return (
@@ -39,7 +69,10 @@ const Dashboard = () => {
         </nav>
 
         <div className="mt-auto">
-          <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-all shadow-sm hover:shadow-md">
+          <button 
+            onClick={() => handleStartWizard()}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-all shadow-sm hover:shadow-md"
+          >
             <span className="material-symbols-outlined text-xl">add</span>
             Tạo Đồ án Mới
           </button>

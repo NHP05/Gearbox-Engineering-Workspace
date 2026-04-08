@@ -2,16 +2,20 @@ const motorService = require('../services/motor.service');
 
 const getMotorcalculate = async (req, res) => {
     try {
-        // Lấy dữ liệu người dùng nhập từ Frontend (req.body) [cite: 94]
-        const { P_ct, n_ct, efficiencies } = req.body;
+        // Lấy dữ liệu người dùng nhập từ Frontend (req.body)
+        const { power, speed, loadType, life } = req.body;
 
         // Validate cơ bản
-        if (!P_ct || P_ct <= 0) {
-            return res.status(400).json({ message: "Công suất P_ct phải lớn hơn 0" });
+        if (!power || power <= 0) {
+            return res.status(400).json({ message: "Công suất (power) phải lớn hơn 0 kW" });
+        }
+        
+        if (!speed || speed <= 0) {
+            return res.status(400).json({ message: "Tốc độ (speed) phải lớn hơn 0 RPM" });
         }
 
-        // Gọi Lõi tính toán
-        const result = await motorService.calculateMotor(P_ct, n_ct, efficiencies);
+        // Gọi Lõi tính toán (map tên cho service)
+        const result = await motorService.calculateMotor(power, speed, { loadType, life });
 
         // Trả về UI
         return res.status(200).json({

@@ -1,4 +1,4 @@
-const DesignVariant = require('../models/variants.model');
+const DesignVariant = require('../models/variant.model');
 const { generateDocxReport } = require('../utils/exportReport');
 const path = require('path');
 const fs = require('fs');

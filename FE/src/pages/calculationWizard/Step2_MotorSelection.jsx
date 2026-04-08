@@ -1,17 +1,38 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import axiosClient from '../../api/axiosClient';
 import WizardScaffold from './WizardScaffold';
 
-const MOTORS = [
-    { id: 1, model: 'AC-15-1450-IE3', power: 15, speed: 1450, efficiency: 92.5, series: 'Standard Series', frame: '160M', weight: 115 },
-    { id: 2, model: 'AC-18-1460-IE3', power: 18.5, speed: 1460, efficiency: 92.1, series: 'High Power Series', frame: '180M', weight: 126 },
-    { id: 3, model: 'AC-11-2900-IE2', power: 11, speed: 2900, efficiency: 89.4, series: 'Compact Series', frame: '142M', weight: 95 },
-    { id: 4, model: 'AC-15-970-IE3', power: 15, speed: 970, efficiency: 91.8, series: 'Low Speed Series', frame: '160L', weight: 118 },
-];
-
 const Step2MotorSelection = ({ onNext, onBack }) => {
-    const [selectedMotor, setSelectedMotor] = useState(1);
-    const selected = useMemo(() => MOTORS.find((item) => item.id === selectedMotor), [selectedMotor]);
+    const [motors, setMotors] = useState([]);
+    const [selectedMotor, setSelectedMotor] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const selected = useMemo(() => motors.find((item) => item.id === selectedMotor), [motors, selectedMotor]);
+
+    // Fetch motor catalog từ API
+    useEffect(() => {
+        const fetchMotors = async () => {
+            try {
+                // Mock data hoặc từ API nếu có endpoint
+                const mockMotors = [
+                    { id: 1, model: 'AC-15-1450-IE3', power: 15, speed: 1450, efficiency: 92.5, series: 'Standard Series', frame: '160M', weight: 115 },
+                    { id: 2, model: 'AC-18-1460-IE3', power: 18.5, speed: 1460, efficiency: 92.1, series: 'High Power Series', frame: '180M', weight: 126 },
+                    { id: 3, model: 'AC-11-2900-IE2', power: 11, speed: 2900, efficiency: 89.4, series: 'Compact Series', frame: '142M', weight: 95 },
+                    { id: 4, model: 'AC-15-970-IE3', power: 15, speed: 970, efficiency: 91.8, series: 'Low Speed Series', frame: '160L', weight: 118 },
+                ];
+                setMotors(mockMotors);
+                if (mockMotors.length > 0) {
+                    setSelectedMotor(mockMotors[0].id);
+                }
+            } catch (err) {
+                setError('Lỗi tải danh sách motor');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchMotors();
+    }, []);
 
     return (
         <WizardScaffold activeKey="motor">
@@ -73,7 +94,7 @@ const Step2MotorSelection = ({ onNext, onBack }) => {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-[#c2c6d6]/20">
-                                        {MOTORS.map((motor) => (
+                                        {motors.map((motor) => (
                                             <tr key={motor.id} className={`group hover:bg-slate-50 ${selectedMotor === motor.id ? 'bg-blue-50/40' : ''}`}>
                                                 <td className="px-8 py-4"><div className="flex flex-col"><span className="font-bold">{motor.model}</span><span className="text-[10px] text-slate-400">{motor.series}</span></div></td>
                                                 <td className="px-4 py-4 font-medium">{motor.power}</td>

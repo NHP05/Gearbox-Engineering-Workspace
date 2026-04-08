@@ -1,8 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import axiosClient from '../../api/axiosClient';
 import WizardScaffold from './WizardScaffold';
 
 const Step3TransmissionDesign = ({ onNext, onBack }) => {
+    const [inputs, setInputs] = useState({
+        power: 15.5,
+        speed: 1440,
+        serviceFactor: 1.2,
+        centerDistance: 450,
+        beltType: 'vbelt',
+    });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setInputs(prev => ({
+            ...prev,
+            [name]: isNaN(value) ? value : Number(value)
+        }));
+    };
+
+    const handleNext = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            // Call belt calculation API
+            const response = await axiosClient.post('/calculate/belt', inputs);
+            localStorage.setItem('step3_result', JSON.stringify(response.data));
+            onNext();
+        } catch (err) {
+            setError(err?.response?.data?.message || 'Lỗi tính toán transmission');
+        } finally {
+            setLoading(false);
+        }
+    };
     return (
         <WizardScaffold activeKey="transmission">
             <div className="p-8">
@@ -114,9 +147,16 @@ const Step3TransmissionDesign = ({ onNext, onBack }) => {
                         <button onClick={onBack} className="flex items-center gap-2 text-slate-500 hover:text-[#191c1d] text-sm font-bold"><span className="material-symbols-outlined text-lg">arrow_back</span>Previous Step</button>
                         <div className="flex gap-4">
                             <button className="px-6 py-2.5 rounded-xl border border-[#c2c6d6] text-sm font-bold hover:bg-[#edeeef]">Save Draft</button>
-                            <button onClick={onNext} className="px-8 py-2.5 rounded-xl gradient-button text-white text-sm font-bold shadow-lg shadow-[#0058be]/20">Validate & Next Step</button>
+                            <button 
+                                onClick={handleNext}
+                                disabled={loading}
+                                className="px-8 py-2.5 rounded-xl gradient-button text-white text-sm font-bold shadow-lg shadow-[#0058be]/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {loading ? 'Đang tính toán...' : 'Validate & Next Step'}
+                            </button>
                         </div>
                     </div>
+                    {error && <div className="mt-4 text-red-500 text-sm p-3 bg-red-50 rounded-lg">{error}</div>}
                 </div>
             </div>
         </WizardScaffold>

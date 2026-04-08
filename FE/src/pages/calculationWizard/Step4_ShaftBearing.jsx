@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import axiosClient from '../../api/axiosClient';
 import WizardScaffold from './WizardScaffold';
 
 const BEARINGS = [
@@ -10,6 +11,28 @@ const BEARINGS = [
 
 const Step4ShaftBearing = ({ onNext, onBack }) => {
     const [selectedIndex, setSelectedIndex] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const handleNext = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const shaftData = {
+                diameter: 35,
+                length: 145,
+                material: 'AISI 4140',
+                safetyFactor: 2.5,
+            };
+            const response = await axiosClient.post('/calculate/shaft', shaftData);
+            localStorage.setItem('step4_result', JSON.stringify(response.data));
+            onNext();
+        } catch (err) {
+            setError(err?.response?.data?.message || 'Lỗi tính toán shaft');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <WizardScaffold activeKey="shaft">
@@ -21,7 +44,14 @@ const Step4ShaftBearing = ({ onNext, onBack }) => {
                     </div>
                     <div className="flex gap-3">
                         <button onClick={onBack} className="px-5 py-2.5 rounded-xl text-sm font-semibold text-[#495e8a] bg-[#e7e8e9] hover:bg-[#e1e3e4] flex items-center gap-2"><span className="material-symbols-outlined text-[18px]">arrow_back</span>Previous Step</button>
-                        <button onClick={onNext} className="px-6 py-2.5 rounded-xl text-sm font-semibold text-white gradient-button flex items-center gap-2">Validate & Next Step<span className="material-symbols-outlined text-[18px]">arrow_forward</span></button>
+                        <button 
+                            onClick={handleNext}
+                            disabled={loading}
+                            className="px-6 py-2.5 rounded-xl text-sm font-semibold text-white gradient-button flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {loading ? 'Đang tính toán...' : 'Validate & Next Step'}
+                            <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                        </button>
                     </div>
                 </div>
 

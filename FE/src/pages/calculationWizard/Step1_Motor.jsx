@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import axiosClient from '../../api/axiosClient';
 import WizardScaffold from './WizardScaffold';
 
 const Step1Motor = ({ onNext }) => {
@@ -9,6 +10,8 @@ const Step1Motor = ({ onNext }) => {
         loadType: 'constant',
         life: 20000,
     });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -16,6 +19,22 @@ const Step1Motor = ({ onNext }) => {
             ...prev,
             [name]: name === 'loadType' ? value : Number(value),
         }));
+    };
+
+    const handleNext = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const response = await axiosClient.post('/motor/calculate', inputs);
+            // Lưu kết quả vào localStorage để step tiếp theo dùng
+            localStorage.setItem('step1_result', JSON.stringify(response.data));
+            onNext();
+        } catch (err) {
+            const message = err?.response?.data?.message || 'Lỗi tính toán motor. Vui lòng kiểm tra lại.';
+            setError(message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -126,10 +145,16 @@ const Step1Motor = ({ onNext }) => {
 
                                     <div className="pt-6 flex items-center justify-between border-t border-[#c2c6d6]/20">
                                         <button type="button" className="text-sm font-bold text-slate-400 hover:text-[#191c1d]">Save Draft</button>
-                                        <button type="button" onClick={onNext} className="gradient-button text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-[#0058be]/20 flex items-center gap-3">
-                                            Next Configuration
+                                        <button 
+                                            type="button" 
+                                            onClick={handleNext}
+                                            disabled={loading}
+                                            className="gradient-button text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-[#0058be]/20 flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {loading ? 'Đang tính toán...' : 'Next Configuration'}
                                         </button>
                                     </div>
+                                    {error && <div className="text-red-500 text-sm p-3 bg-red-50 rounded-lg">{error}</div>}
                                 </form>
                             </div>
                         </div>

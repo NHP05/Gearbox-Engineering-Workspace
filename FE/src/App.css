@@ -181,3 +181,26 @@
     border-right-color: var(--border);
   }
 }
+
+/* Gradient Button Class */
+.gradient-button {
+  background: linear-gradient(135deg, #0058be 0%, #2170e4 100%);
+  color: white;
+  font-weight: 700;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.875rem 1rem;
+  box-shadow: 0 10px 25px rgba(0, 88, 190, 0.3);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gradient-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(0, 88, 190, 0.4);
+  brightness: 1.1;
+}
+
+.gradient-button:active:not(:disabled) {
+  transform: translateY(0);
+}

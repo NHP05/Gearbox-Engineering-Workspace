@@ -1,9 +1,41 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import axiosClient from '../../api/axiosClient';
 import WizardScaffold from './WizardScaffold';
 
 const Step5ValidationAnalysis = ({ onBack, onComplete }) => {
     const [exportFormat, setExportFormat] = useState('pdf');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const handleExport = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const allResults = {
+                step1: JSON.parse(localStorage.getItem('step1_result') || '{}'),
+                step3: JSON.parse(localStorage.getItem('step3_result') || '{}'),
+                step4: JSON.parse(localStorage.getItem('step4_result') || '{}'),
+                exportFormat,
+            };
+            const response = await axiosClient.post('/export', allResults, {
+                responseType: 'blob'
+            });
+            // Tải file xuống
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `gearbox-design.${exportFormat}`);
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+            onComplete && onComplete();
+        } catch (err) {
+            setError(err?.response?.data?.message || 'Lỗi xuất report');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <WizardScaffold activeKey="validation">
@@ -83,9 +115,17 @@ const Step5ValidationAnalysis = ({ onBack, onComplete }) => {
                                     <option value="step">STEP</option>
                                     <option value="dwg">DWG</option>
                                 </select>
-                                <button onClick={onComplete} className="gradient-button flex items-center gap-2 px-8 py-2.5 rounded-lg text-sm font-bold text-white shadow-lg hover:shadow-blue-500/20"><span className="material-symbols-outlined">description</span>Export Full Report</button>
+                                <button 
+                                    onClick={handleExport}
+                                    disabled={loading}
+                                    className="gradient-button flex items-center gap-2 px-8 py-2.5 rounded-lg text-sm font-bold text-white shadow-lg hover:shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <span className="material-symbols-outlined">description</span>
+                                    {loading ? 'Đang xuất...' : 'Export Full Report'}
+                                </button>
                             </div>
                         </div>
+                        {error && <div className="mt-4 text-red-500 text-sm p-3 bg-red-50 rounded-lg">{error}</div>}
                     </div>
                 </div>
             </div>

@@ -24,12 +24,21 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Navigate to="/wizard" replace />} />
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
 
+                {/* Wizard routes - all variants point to same component */}
                 <Route
                     path="/wizard"
+                    element={(
+                        <RequireAuth>
+                            <CalculationWizard />
+                        </RequireAuth>
+                    )}
+                />
+                <Route
+                    path="/wizard/:step"
                     element={(
                         <RequireAuth>
                             <CalculationWizard />
