@@ -1,17 +1,21 @@
 const { Sequelize } = require('sequelize');
+require('dotenv').config();
 
-// Thông số chuẩn của XAMPP: user là 'root', pass là chuỗi rỗng ''
-const sequelize = new Sequelize('gearbox_db', 'root', '', {
-    host: '127.0.0.1', // Dùng 127.0.0.1 sẽ ổn định hơn localhost
-    dialect: 'mysql', 
-    logging: false, 
-    port: 3636      
-});
+const sequelize = new Sequelize(
+    process.env.DB_NAME || 'gearbox_db',
+    process.env.DB_USER || 'root',
+    process.env.DB_PASSWORD || process.env.DB_PASS || '', {
+        host: process.env.DB_HOST || '127.0.0.1',
+        dialect: 'mysql',
+        logging: false,
+        port: Number(process.env.DB_PORT) || 3636,
+    }
+);
 
 // Kiểm tra kết nối
 sequelize.authenticate()
     .then(() => {
-        console.log('✅ Kết nối XAMPP MySQL thành công!');
+        console.log(`✅ Kết nối MySQL thành công! Host=${process.env.DB_HOST || '127.0.0.1'} Port=${process.env.DB_PORT || 3636}`);
     })
     .catch(err => {
         console.error('❌ Lỗi kết nối Database:', err.message);

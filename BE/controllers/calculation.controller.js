@@ -7,12 +7,16 @@ const shaftService = require('../services/shaft.service');
 // THÊM CHỮ async VÀO ĐÂY
 const calcMotor = async (req, res) => {
     try {
-        const { F, v, nCT, efficiencies } = req.body;
-        if (!F || !v || !nCT) return res.status(400).json({ success: false, message: "Thiếu F, v hoặc nCT" });
+        const { power, speed, loadType, life, efficiencies } = req.body;
 
-        const P_ct = (F * v) / 1000;
-        const result = await motorService.calculateMotor(P_ct, nCT, efficiencies);
-        
+        if (!power || power <= 0) {
+            return res.status(400).json({ success: false, message: "Thiếu hoặc sai giá trị power" });
+        }
+        if (!speed || speed <= 0) {
+            return res.status(400).json({ success: false, message: "Thiếu hoặc sai giá trị speed" });
+        }
+
+        const result = await motorService.calculateMotor(power, speed, efficiencies);
         return res.status(200).json({ success: true, data: result });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });

@@ -7,7 +7,6 @@ const axiosClient = axios.create({
     },
 });
 
-// Interceptor: Tự động đính kèm Token vào Header trước khi gửi request
 axiosClient.interceptors.request.use((config) => {
     const token = localStorage.getItem('jwt_token');
     if (token) {

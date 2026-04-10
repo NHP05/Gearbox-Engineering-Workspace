@@ -1,6 +1,6 @@
 const Belt = require('../models/belt.model');
 
-const calculateBelt = async (P_req, n_motor, u_belt) => {
+const calculateBeltDrive = async (P_req, n_motor, u_belt) => {
     // 1. Chọn loại đai dựa trên công suất (Logic đơn giản hóa)
     let beltType = 'A';
     if (P_req > 5) beltType = 'B';
@@ -26,4 +26,4 @@ const calculateBelt = async (P_req, n_motor, u_belt) => {
     };
 };
 
-module.exports = { calculateBelt };
+module.exports = { calculateBeltDrive };
