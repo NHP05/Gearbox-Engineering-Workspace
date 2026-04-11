@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary-container": "#fefcff",
+              "inverse-on-surface": "#f0f1f2",
+              "primary-fixed": "#d8e2ff",
+              "on-secondary-fixed-variant": "#304671",
+              "tertiary-fixed": "#ffdcc6",
+              "secondary": "#495e8a",
+              "on-background": "#191c1d",
+              "on-tertiary-fixed": "#311400",
+              "error-container": "#ffdad6",
+              "surface-container-lowest": "#ffffff",
+              "on-error": "#ffffff",
+              "surface-bright": "#f8f9fa",
+              "primary-container": "#2170e4",
+              "on-tertiary-fixed-variant": "#723600",
+              "tertiary-container": "#b75b00",
+              "surface-tint": "#005ac2",
+              "outline-variant": "#c2c6d6",
+              "outline": "#727785",
+              "on-tertiary": "#ffffff",
+              "on-secondary-container": "#405682",
+              "error": "#ba1a1a",
+              "surface-variant": "#e1e3e4",
+              "on-primary-fixed-variant": "#004395",
+              "on-primary": "#ffffff",
+              "on-surface-variant": "#424754",
+              "surface-container-highest": "#e1e3e4",
+              "secondary-fixed": "#d8e2ff",
+              "inverse-primary": "#adc6ff",
+              "tertiary": "#924700",
+              "surface-dim": "#d9dadb",
+              "on-error-container": "#93000a",
+              "primary": "#0058be",
+              "on-secondary-fixed": "#001a42",
+              "on-secondary": "#ffffff",
+              "on-tertiary-container": "#fffbff",
+              "surface": "#f8f9fa",
+              "inverse-surface": "#2e3132",
+              "background": "#f8f9fa",
+              "on-primary-fixed": "#001a42",
+              "surface-container-low": "#f3f4f5",
+              "secondary-container": "#b6ccff",
+              "primary-fixed-dim": "#adc6ff",
+              "on-surface": "#191c1d",
+              "surface-container-high": "#e7e8e9",
+              "tertiary-fixed-dim": "#ffb786",
+              "secondary-fixed-dim": "#b1c6f9",
+              "surface-container": "#edeeef"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #0058be 0%, #2170e4 100%);
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- TopAppBar from Shared Components -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-6 h-16 w-full bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm dark:shadow-none font-sans antialiased tracking-tight">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-slate-900 dark:text-slate-50">Gearbox Designer</span>
+<nav class="hidden md:flex items-center space-x-6">
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors" href="#">Projects</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors" href="#">Inventory</a>
+<a class="text-blue-700 dark:text-blue-400 border-b-2 border-blue-700 dark:border-blue-400 pb-1" href="#">Analysis</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors" href="#">Reports</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">notifications</button>
+<button class="material-symbols-outlined p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">settings</button>
+<button class="primary-gradient text-white px-4 py-2 rounded-lg text-sm font-semibold active:scale-95 duration-150">Export Data</button>
+</div>
+</header>
+<!-- SideNavBar from Shared Components -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 border-r border-slate-200/10 dark:border-slate-800/10 bg-slate-50 dark:bg-slate-950 flex flex-col p-4 space-y-2">
+<div class="mb-6 px-2">
+<h2 class="text-lg font-black text-slate-900 dark:text-slate-50">Project Alpha</h2>
+<p class="text-xs text-slate-500 font-medium">High-Torque Specs</p>
+</div>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-lg hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined text-xl">settings_input_component</span>
+<span class="text-sm font-medium">Bearings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-lg hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined text-xl">settings_suggest</span>
+<span class="text-sm font-medium">Gears</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined text-xl">straighten</span>
+<span class="text-sm font-medium">Shafts</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-lg hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined text-xl">opacity</span>
+<span class="text-sm font-medium">Lubrication</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-lg hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined text-xl">science</span>
+<span class="text-sm font-medium">Materials</span>
+</a>
+</div>
+<div class="mt-auto space-y-1 pt-4 border-t border-slate-200/20">
+<button class="w-full flex items-center justify-center gap-2 primary-gradient text-white py-2 rounded-lg text-sm font-bold mb-4">
+<span class="material-symbols-outlined text-lg">add</span>
+                New Simulation
+            </button>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-500 text-xs font-medium" href="#">
+<span class="material-symbols-outlined text-base">help</span>
+                Documentation
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-500 text-xs font-medium" href="#">
+<span class="material-symbols-outlined text-base">contact_support</span>
+                Support
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 min-h-screen bg-surface">
+<div class="p-8 max-w-7xl mx-auto">
+<!-- Breadcrumbs / Step Indicator -->
+<nav class="flex items-center gap-2 mb-4 text-sm text-secondary">
+<span>Step 4: Shaft &amp; Bearing Design</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="font-bold text-on-surface">Bearing Comparison</span>
+</nav>
+<!-- Header Section -->
+<div class="flex items-end justify-between mb-8">
+<div>
+<h1 class="text-3xl font-extrabold tracking-tight text-on-surface mb-2">Bearing Comparison</h1>
+<p class="text-on-surface-variant max-w-2xl">Compare technical specifications for deep groove ball bearings sized for the Ø35mm input shaft region under calculated radial loads of 12.4kN.</p>
+</div>
+<div class="flex gap-3">
+<button class="bg-surface-container-high text-on-surface px-4 py-2 rounded-lg text-sm font-medium hover:bg-surface-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-base">filter_list</span>
+                        Filter Parameters
+                    </button>
+</div>
+</div>
+<!-- Comparison Matrix -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Option 1: SKF 6207-2RS1 -->
+<div class="bg-surface-container-lowest rounded-xl p-1 relative flex flex-col group transition-all duration-300 hover:shadow-2xl hover:shadow-on-surface/5 ring-1 ring-outline-variant/10">
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<div>
+<span class="bg-surface-container-highest text-on-surface-variant text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md mb-2 inline-block">Standard Series</span>
+<h3 class="text-xl font-bold text-on-surface leading-tight">SKF 6207-2RS1</h3>
+<p class="text-sm text-secondary">Sealed Deep Groove Ball Bearing</p>
+</div>
+</div>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between items-center group/row">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Dynamic Load (Cr)</span>
+<span class="text-sm font-bold text-on-surface">27.0 kN</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Static Load (C0r)</span>
+<span class="text-sm font-bold text-on-surface">15.3 kN</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Fatigue Limit (Pu)</span>
+<span class="text-sm font-bold text-on-surface">0.655 kN</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Limiting Speed</span>
+<span class="text-sm font-bold text-on-surface">6,300 r/min</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Life (L10h)</span>
+<span class="text-sm font-bold text-on-surface">18,400 h</span>
+</div>
+<div class="pt-4 flex justify-between items-center border-t border-outline-variant/10">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Estimated Cost</span>
+<span class="text-lg font-black text-on-surface">$42.50</span>
+</div>
+</div>
+<button class="w-full bg-surface-container-high text-on-surface font-bold py-3 rounded-lg hover:bg-surface-variant transition-all active:scale-[0.98]">Select Unit</button>
+</div>
+</div>
+<!-- Option 2: SKF 6307-2RS1 (RECOMMENDED) -->
+<div class="bg-surface-container-lowest rounded-xl p-1 relative flex flex-col group transition-all duration-300 shadow-xl shadow-primary/10 ring-2 ring-primary">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full z-10 shadow-md">
+                        Recommended Choice
+                    </div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<div>
+<span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md mb-2 inline-block">Heavy Series</span>
+<h3 class="text-xl font-bold text-on-surface leading-tight">SKF 6307-2RS1</h3>
+<p class="text-sm text-secondary">High Load Deep Groove</p>
+</div>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Dynamic Load (Cr)</span>
+<span class="text-sm font-bold text-primary">35.1 kN</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Static Load (C0r)</span>
+<span class="text-sm font-bold text-on-surface">19.0 kN</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Fatigue Limit (Pu)</span>
+<span class="text-sm font-bold text-on-surface">0.815 kN</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Limiting Speed</span>
+<span class="text-sm font-bold text-on-surface">5,600 r/min</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Life (L10h)</span>
+<span class="text-sm font-bold text-primary">42,800 h</span>
+</div>
+<div class="pt-4 flex justify-between items-center border-t border-outline-variant/10">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Estimated Cost</span>
+<span class="text-lg font-black text-on-surface">$58.90</span>
+</div>
+</div>
+<button class="w-full primary-gradient text-white font-bold py-3 rounded-lg hover:opacity-90 shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">Confirm Selection</button>
+</div>
+</div>
+<!-- Option 3: FAG 6207-C3 -->
+<div class="bg-surface-container-lowest rounded-xl p-1 relative flex flex-col group transition-all duration-300 hover:shadow-2xl hover:shadow-on-surface/5 ring-1 ring-outline-variant/10">
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<div>
+<span class="bg-surface-container-highest text-on-surface-variant text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md mb-2 inline-block">High Clearance</span>
+<h3 class="text-xl font-bold text-on-surface leading-tight">FAG 6207-C3</h3>
+<p class="text-sm text-secondary">Standard Ball Bearing (C3)</p>
+</div>
+</div>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Dynamic Load (Cr)</span>
+<span class="text-sm font-bold text-on-surface">25.5 kN</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Static Load (C0r)</span>
+<span class="text-sm font-bold text-on-surface">15.3 kN</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Fatigue Limit (Pu)</span>
+<span class="text-sm font-bold text-on-surface">0.720 kN</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Limiting Speed</span>
+<span class="text-sm font-bold text-on-surface">11,000 r/min</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Life (L10h)</span>
+<span class="text-sm font-bold text-on-surface">16,200 h</span>
+</div>
+<div class="pt-4 flex justify-between items-center border-t border-outline-variant/10">
+<span class="text-xs font-medium text-on-surface-variant uppercase tracking-wider">Estimated Cost</span>
+<span class="text-lg font-black text-on-surface">$38.15</span>
+</div>
+</div>
+<button class="w-full bg-surface-container-high text-on-surface font-bold py-3 rounded-lg hover:bg-surface-variant transition-all active:scale-[0.98]">Select Unit</button>
+</div>
+</div>
+</div>
+<!-- Bento Data Visualization Section -->
+<div class="mt-12 grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-6 h-[400px]">
+<div class="md:col-span-2 md:row-span-2 bg-surface-container rounded-xl p-6 relative overflow-hidden">
+<div class="relative z-10 h-full flex flex-col">
+<h4 class="text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-4">Service Life Projection</h4>
+<div class="mt-auto">
+<div class="flex items-end gap-4 h-48 mb-4">
+<div class="w-1/3 bg-on-surface-variant/20 rounded-t-lg h-[40%]"></div>
+<div class="w-1/3 primary-gradient rounded-t-lg h-full"></div>
+<div class="w-1/3 bg-on-surface-variant/20 rounded-t-lg h-[35%]"></div>
+</div>
+<div class="flex justify-between text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">
+<span>6207-2RS1</span>
+<span class="text-primary">6307-2RS1</span>
+<span>6207-C3</span>
+</div>
+</div>
+</div>
+</div>
+<div class="md:col-span-2 bg-surface-container-lowest rounded-xl p-6 flex items-center justify-between ring-1 ring-outline-variant/10">
+<div>
+<h4 class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Safety Factor</h4>
+<p class="text-2xl font-black text-on-surface">2.44 <span class="text-sm font-medium text-secondary ml-1">S0</span></p>
+</div>
+<div class="h-12 w-12 rounded-full border-4 border-primary border-t-outline-variant/20 rotate-45"></div>
+</div>
+<div class="md:col-span-1 bg-tertiary-fixed text-on-tertiary-fixed rounded-xl p-6">
+<h4 class="text-xs font-bold uppercase tracking-widest mb-1">Warning</h4>
+<p class="text-sm leading-tight font-medium">Shaft shoulder diameter (Da) must exceed 42mm for proper sealing.</p>
+</div>
+<div class="md:col-span-1 bg-surface-container-high rounded-xl p-6 flex flex-col justify-center">
+<h4 class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Unit Mass</h4>
+<p class="text-2xl font-black text-on-surface">0.45 <span class="text-sm font-medium text-secondary">kg</span></p>
+</div>
+</div>
+<!-- Detailed Specs Toggle -->
+<div class="mt-12 flex items-center justify-center">
+<button class="flex items-center gap-2 text-primary font-bold text-sm group">
+                    View Complete Technical Datasheets
+                    <span class="material-symbols-outlined group-hover:translate-y-1 transition-transform">keyboard_arrow_down</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Contextual FAB - suppressed on detail views but left for analysis context as per prompt guidance for top-level alignment -->
+<button class="fixed bottom-8 right-8 primary-gradient text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform z-50">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">save</span>
+</button>
+</body></html>

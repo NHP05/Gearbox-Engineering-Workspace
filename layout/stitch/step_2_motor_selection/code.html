@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Motor Selection - Gearbox Designer</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-container": "#2170e4",
+              "surface-bright": "#f8f9fa",
+              "primary": "#0058be",
+              "on-secondary-container": "#405682",
+              "surface-tint": "#005ac2",
+              "tertiary-container": "#b75b00",
+              "on-tertiary": "#ffffff",
+              "secondary": "#495e8a",
+              "on-secondary-fixed-variant": "#304671",
+              "surface-container-high": "#e7e8e9",
+              "surface-container-low": "#f3f4f5",
+              "on-primary-container": "#fefcff",
+              "on-background": "#191c1d",
+              "inverse-on-surface": "#f0f1f2",
+              "on-primary-fixed-variant": "#004395",
+              "error": "#ba1a1a",
+              "on-error": "#ffffff",
+              "on-primary": "#ffffff",
+              "error-container": "#ffdad6",
+              "surface-variant": "#e1e3e4",
+              "on-tertiary-container": "#fffbff",
+              "surface-container-lowest": "#ffffff",
+              "secondary-fixed": "#d8e2ff",
+              "on-secondary": "#ffffff",
+              "surface-dim": "#d9dadb",
+              "surface-container-highest": "#e1e3e4",
+              "tertiary-fixed-dim": "#ffb786",
+              "secondary-fixed-dim": "#b1c6f9",
+              "surface-container": "#edeeef",
+              "on-tertiary-fixed": "#311400",
+              "on-surface": "#191c1d",
+              "inverse-primary": "#adc6ff",
+              "on-surface-variant": "#424754",
+              "background": "#f8f9fa",
+              "tertiary-fixed": "#ffdcc6",
+              "primary-fixed": "#d8e2ff",
+              "tertiary": "#924700",
+              "secondary-container": "#b6ccff",
+              "primary-fixed-dim": "#adc6ff",
+              "on-tertiary-fixed-variant": "#723600",
+              "on-error-container": "#93000a",
+              "surface": "#f8f9fa",
+              "outline": "#727785",
+              "on-secondary-fixed": "#001a42",
+              "inverse-surface": "#2e3132",
+              "on-primary-fixed": "#001a42",
+              "outline-variant": "#c2c6d6"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        vertical-align: middle;
+      }
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+      }
+      .primary-gradient {
+        background: linear-gradient(135deg, #0058be 0%, #2170e4 100%);
+      }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200/50 dark:border-slate-800/50 docked full-width top-0 z-50 fixed w-full">
+<div class="flex justify-between items-center w-full px-6 py-3">
+<div class="flex items-center gap-8">
+<span class="text-lg font-bold tracking-tighter text-slate-900 dark:text-slate-50">Gearbox Designer</span>
+<nav class="hidden md:flex gap-6">
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-['Inter'] antialiased tracking-tight" href="#">Projects</a>
+<a class="text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 pb-1 font-['Inter'] antialiased tracking-tight" href="#">calculates</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-['Inter'] antialiased tracking-tight" href="#">Catalog</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 font-['Inter'] antialiased tracking-tight" href="#">Reports</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">search</span>
+<input class="bg-surface-container border-none rounded-lg pl-10 pr-4 py-1.5 text-sm focus:ring-2 focus:ring-primary/30 w-64" placeholder="Search catalog..." type="text"/>
+</div>
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors rounded-full">
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+</button>
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors rounded-full">
+<span class="material-symbols-outlined text-on-surface-variant">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant/20">
+<img alt="User Profile" data-alt="professional headshot of a male mechanical engineer in a clean studio setting with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBixm-zneO8nW5faE9ioKdYulZVlGWkRJswklP39ZXdF9wwc6VPXWJBCu5aLzR8WF9AwoFz1qH1tqjsqc03YxeBWFrtmdykqdomeoUNjEeeGUk7wqB3jGSkfMBoN25dhWnSqUzuOCqW3LDxb_NRCDGqBsreQymrRXZLy5XE6z6J9QxlCG_IT8rhhkxzguTobf9Q9TPD1xEP8dPIVsqSay1bSd4Z90qyew1Tn3ERZLEF_gGsPmcqs0wOkSPkObwBaze_BhtWdlYbh--P"/>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="flex flex-col fixed left-0 top-0 h-full p-4 gap-4 bg-slate-100 dark:bg-slate-950 docked left-0 h-screen w-64 pt-20">
+<div class="px-2 mb-4">
+<h2 class="text-blue-700 dark:text-blue-400 font-bold font-['Inter'] text-sm">Project Alpha</h2>
+<p class="text-slate-500 text-xs font-['Inter']">V6 Gearbox Assembly</p>
+</div>
+<nav class="flex flex-col gap-1 flex-1">
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-lg px-3 py-2 flex items-center gap-3 transition-transform duration-200 hover:translate-x-1 font-['Inter'] text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="edit_note">edit_note</span>
+                Input Parameters
+            </a>
+<a class="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg px-3 py-2 flex items-center gap-3 transition-transform duration-200 hover:translate-x-1 font-['Inter'] text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="electric_bolt" style="font-variation-settings: 'FILL' 1;">electric_bolt</span>
+                Motor Selection
+            </a>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-lg px-3 py-2 flex items-center gap-3 transition-transform duration-200 hover:translate-x-1 font-['Inter'] text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
+                Gear Ratio
+            </a>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-lg px-3 py-2 flex items-center gap-3 transition-transform duration-200 hover:translate-x-1 font-['Inter'] text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="layers">layers</span>
+                Housing Design
+            </a>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-lg px-3 py-2 flex items-center gap-3 transition-transform duration-200 hover:translate-x-1 font-['Inter'] text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+                Final Review
+            </a>
+</nav>
+<div class="mt-auto border-t border-outline-variant/10 pt-4 flex flex-col gap-1">
+<button class="primary-gradient text-white rounded-lg py-2.5 px-4 text-sm font-semibold mb-4 shadow-lg shadow-primary/20 active:scale-95 duration-100">
+                Export CAD
+            </button>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-lg px-3 py-2 flex items-center gap-3 font-['Inter'] text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+                Documentation
+            </a>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-lg px-3 py-2 flex items-center gap-3 font-['Inter'] text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+                Support
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 min-h-screen bg-surface">
+<div class="max-w-7xl mx-auto p-8 grid grid-cols-12 gap-8">
+<!-- Left Column: Primary Interface -->
+<div class="col-span-12 lg:col-span-8 flex flex-col gap-8">
+<!-- Breadcrumbs/Progress Indicator -->
+<div class="flex items-center gap-2 text-xs font-bold tracking-widest text-outline uppercase">
+<span>Step 02</span>
+<span class="material-symbols-outlined text-[10px]">chevron_right</span>
+<span class="text-primary">Motor Selection</span>
+</div>
+<!-- Recommended Motor Section -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden p-8 border border-outline-variant/5">
+<div class="flex justify-between items-start mb-8">
+<div>
+<span class="bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full mb-2 inline-block">Best Match</span>
+<h1 class="text-3xl font-extrabold tracking-tight text-on-surface">IE3 Super-Efficiency Series</h1>
+<p class="text-on-surface-variant mt-1">Industrial Grade High-Torque AC Induction Motor</p>
+</div>
+<div class="w-24 h-24 bg-surface-container flex items-center justify-center rounded-xl">
+<span class="material-symbols-outlined text-5xl text-primary" style="font-variation-settings: 'FILL' 1;">electric_bolt</span>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="bg-surface-container-low rounded-lg p-4 transition-colors hover:bg-surface-container">
+<p class="text-[10px] font-bold text-outline uppercase tracking-wider mb-1">Power Rating</p>
+<p class="text-xl font-bold text-on-surface">15.0 <span class="text-sm font-medium">kW</span></p>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 transition-colors hover:bg-surface-container">
+<p class="text-[10px] font-bold text-outline uppercase tracking-wider mb-1">Rated Speed</p>
+<p class="text-xl font-bold text-on-surface">1450 <span class="text-sm font-medium">RPM</span></p>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 transition-colors hover:bg-surface-container">
+<p class="text-[10px] font-bold text-outline uppercase tracking-wider mb-1">Nom. Torque</p>
+<p class="text-xl font-bold text-on-surface">98.8 <span class="text-sm font-medium">Nm</span></p>
+</div>
+<div class="bg-surface-container-low rounded-lg p-4 transition-colors hover:bg-surface-container">
+<p class="text-[10px] font-bold text-outline uppercase tracking-wider mb-1">Efficiency</p>
+<p class="text-xl font-bold text-primary">92.5 <span class="text-sm font-medium">%</span></p>
+</div>
+</div>
+<div class="mt-8 flex items-center justify-between border-t border-outline-variant/10 pt-6">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-lg">scale</span>
+<span class="text-sm font-medium text-on-surface-variant">115 kg</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-lg">database</span>
+<span class="text-sm font-medium text-on-surface-variant">Frame: 160M</span>
+</div>
+</div>
+<button class="primary-gradient text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-md hover:shadow-lg transition-shadow active:scale-[0.98]">
+                            Confirm Selection
+                        </button>
+</div>
+</section>
+<!-- Motor Catalog Table -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant/5 overflow-hidden">
+<div class="px-8 py-6 border-b border-outline-variant/10 flex justify-between items-center">
+<h2 class="text-lg font-bold tracking-tight">Motor Catalog</h2>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container rounded-lg"><span class="material-symbols-outlined text-on-surface-variant">filter_list</span></button>
+<button class="p-2 hover:bg-surface-container rounded-lg"><span class="material-symbols-outlined text-on-surface-variant">sort</span></button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low">
+<tr>
+<th class="px-8 py-3 text-[10px] font-bold text-outline uppercase tracking-widest">Model ID</th>
+<th class="px-4 py-3 text-[10px] font-bold text-outline uppercase tracking-widest">Power (kW)</th>
+<th class="px-4 py-3 text-[10px] font-bold text-outline uppercase tracking-widest">Rated Speed</th>
+<th class="px-4 py-3 text-[10px] font-bold text-outline uppercase tracking-widest">Efficiency</th>
+<th class="px-8 py-3 text-right"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-8 py-4">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">AC-15-1450-IE3</span>
+<span class="text-[10px] text-outline">Standard Series</span>
+</div>
+</td>
+<td class="px-4 py-4 font-medium">15.0</td>
+<td class="px-4 py-4 font-medium">1450 RPM</td>
+<td class="px-4 py-4">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-primary text-[10px] font-bold">92.5%</span>
+</td>
+<td class="px-8 py-4 text-right">
+<button class="text-xs font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Select</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-8 py-4">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">AC-18-1460-IE3</span>
+<span class="text-[10px] text-outline">High Power Series</span>
+</div>
+</td>
+<td class="px-4 py-4 font-medium">18.5</td>
+<td class="px-4 py-4 font-medium">1460 RPM</td>
+<td class="px-4 py-4">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-primary text-[10px] font-bold">92.1%</span>
+</td>
+<td class="px-8 py-4 text-right">
+<button class="text-xs font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Select</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-8 py-4">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">AC-11-2900-IE2</span>
+<span class="text-[10px] text-outline">Compact Series</span>
+</div>
+</td>
+<td class="px-4 py-4 font-medium">11.0</td>
+<td class="px-4 py-4 font-medium">2900 RPM</td>
+<td class="px-4 py-4">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-primary text-[10px] font-bold">89.4%</span>
+</td>
+<td class="px-8 py-4 text-right">
+<button class="text-xs font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Select</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-8 py-4">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface">AC-15-970-IE3</span>
+<span class="text-[10px] text-outline">Low Speed Series</span>
+</div>
+</td>
+<td class="px-4 py-4 font-medium">15.0</td>
+<td class="px-4 py-4 font-medium">970 RPM</td>
+<td class="px-4 py-4">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-primary text-[10px] font-bold">91.8%</span>
+</td>
+<td class="px-8 py-4 text-right">
+<button class="text-xs font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Select</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Navigation Buttons -->
+<footer class="flex items-center justify-between mt-4">
+<button class="flex items-center gap-2 px-6 py-3 rounded-lg border border-outline-variant text-on-surface font-semibold hover:bg-surface-container-low transition-colors active:scale-95">
+<span class="material-symbols-outlined text-sm">arrow_back</span>
+                        Back to Parameters
+                    </button>
+<button class="flex items-center gap-2 px-8 py-3 rounded-lg primary-gradient text-white font-bold shadow-lg shadow-primary/30 hover:brightness-110 transition-all active:scale-95">
+                        Next: Transmission Design
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</footer>
+</div>
+<!-- Right Column: Insights & Documentation -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+<!-- Engineering Insights Card -->
+<section class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-lg bg-tertiary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary">lightbulb</span>
+</div>
+<h3 class="font-bold tracking-tight">Engineering Insights</h3>
+</div>
+<div class="space-y-4">
+<div class="p-4 bg-surface-container-lowest rounded-lg">
+<h4 class="text-xs font-bold text-primary uppercase mb-1">Service Factor</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed">Selecting a motor with a slightly higher torque rating (15-20%) can improve the service factor by reducing thermal stress on the gearbox internals.</p>
+</div>
+<div class="p-4 bg-surface-container-lowest rounded-lg">
+<h4 class="text-xs font-bold text-primary uppercase mb-1">System Efficiency</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed">The IE3 class motor reduces energy loss by approximately 4.5% compared to standard models, potentially saving 1,200 kWh per annum under full load.</p>
+</div>
+</div>
+<div class="mt-6 pt-6 border-t border-outline-variant/10">
+<img alt="Motor Engineering" class="w-full h-32 object-cover rounded-lg mb-4 opacity-80" data-alt="close-up of an industrial copper winding motor core with intricate wiring and metallic textures" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEryknEit699Yq01WTmtrsx64yhFg7d9G4sWzX5R-1CVDk3ZKsIo3SzOTTNyg80G9o3eIYMhwBWoszXlk5qijoVwcml0nfYTEC8no4NnSpHRyGJctxfbTFYvJjUl6XVm1-_H3l4-IykHlVF1r_UETEZdno53H3lxFytGJHq1W-6HuV4X4PVjgTNFAnmhm1JUxt1Ee7_btqoo5GvHVxjm4gndhUrmLNzrQ5O5z00z69CSoPQsgRvERDuy-TtLxmZWUkE0Gf066tYFpy"/>
+<p class="text-[10px] text-outline uppercase font-bold text-center">Reference: ISO 12944 Compliance</p>
+</div>
+</section>
+<!-- Configuration Summary -->
+<section class="bg-surface-container-highest rounded-xl p-6">
+<h3 class="text-sm font-bold tracking-tight mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">assignment</span>
+                        Current Config
+                    </h3>
+<ul class="space-y-3">
+<li class="flex justify-between text-xs">
+<span class="text-on-surface-variant">Input Speed</span>
+<span class="font-bold">1450 RPM</span>
+</li>
+<li class="flex justify-between text-xs">
+<span class="text-on-surface-variant">Target Torque</span>
+<span class="font-bold">850.0 Nm</span>
+</li>
+<li class="flex justify-between text-xs">
+<span class="text-on-surface-variant">Service Class</span>
+<span class="font-bold">Continuous (S1)</span>
+</li>
+<li class="flex justify-between text-xs">
+<span class="text-on-surface-variant">Safety Factor</span>
+<span class="font-bold text-primary">1.25</span>
+</li>
+</ul>
+</section>
+<!-- Support/Documentation CTA -->
+<div class="glass-effect rounded-xl p-6 border border-primary/10 flex flex-col items-center text-center">
+<span class="material-symbols-outlined text-primary mb-3 text-3xl">help_center</span>
+<h4 class="font-bold text-sm mb-1">Need assistance?</h4>
+<p class="text-xs text-on-surface-variant mb-4">Our mechanical engineering team is available for custom ratio validation.</p>
+<button class="text-primary text-xs font-bold hover:underline flex items-center gap-1">
+                        Open Support Documentation
+                        <span class="material-symbols-outlined text-xs">open_in_new</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>
