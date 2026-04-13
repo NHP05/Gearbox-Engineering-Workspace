@@ -1,6 +1,41 @@
 // Mock Data cho chế độ test (không cần database)
 const mockUsers = [
-    { id: 1, username: 'admin', password_hash: '$2a$10$test' }
+    {
+        id: 1,
+        username: 'admin',
+        email: 'admin@gearbox.local',
+        role: 'ADMIN',
+        is_banned: false,
+        ban_reason: null,
+        banned_by: null,
+        banned_at: null,
+        language: 'vi',
+        theme: 'light',
+        last_login_at: new Date('2026-04-01T08:00:00Z'),
+        last_seen_at: new Date('2026-04-01T08:10:00Z'),
+        createdAt: new Date('2026-03-01T08:00:00Z'),
+        updatedAt: new Date('2026-04-01T08:10:00Z'),
+        password_hash: '$2b$10$dqy6pTZjSz4dzSwW13HU7eFpHHGFGVfHSHfNkPGzXXoCXu3vziGh2',
+        password_plain: 'test'
+    },
+    {
+        id: 2,
+        username: 'engineer1',
+        email: 'engineer1@gearbox.local',
+        role: 'USER',
+        is_banned: false,
+        ban_reason: null,
+        banned_by: null,
+        banned_at: null,
+        language: 'vi',
+        theme: 'light',
+        last_login_at: new Date('2026-04-01T09:00:00Z'),
+        last_seen_at: new Date('2026-04-01T09:05:00Z'),
+        createdAt: new Date('2026-03-10T08:00:00Z'),
+        updatedAt: new Date('2026-04-01T09:05:00Z'),
+        password_hash: '$2b$10$dqy6pTZjSz4dzSwW13HU7eFpHHGFGVfHSHfNkPGzXXoCXu3vziGh2',
+        password_plain: 'test'
+    }
 ];
 
 const mockProjects = [
@@ -17,7 +52,7 @@ const mockProjects = [
     },
     { 
         id: 2, 
-        user_id: 1, 
+        user_id: 2, 
         project_name: 'Thiết kế bánh răng công nghiệp', 
         power_P: 22, 
         speed_n: 1200, 
@@ -37,6 +72,27 @@ const mockVariants = [
     }
 ];
 
+const mockNotifications = [
+    {
+        id: 1,
+        user_id: 2,
+        type: 'WELCOME',
+        title: 'Welcome',
+        message: 'Your account is ready. Start your first gearbox project.',
+        metadata: null,
+        is_read: false,
+        is_pinned: false,
+        pinned_at: null,
+        createdAt: new Date('2026-04-01T08:00:00Z'),
+        updatedAt: new Date('2026-04-01T08:00:00Z'),
+    },
+];
+
+const mockAdminActionLogs = [];
+const mockDeletedAccounts = [];
+const mockSupportTickets = [];
+const mockSupportMessages = [];
+
 const mockMotors = [
     { id: 1, name: 'Y90L-4 (2.2kW)', efficiency: 0.88, cost: 15000000 },
     { id: 2, name: 'Y100L1-4 (3.0kW)', efficiency: 0.89, cost: 18000000 },
@@ -55,6 +111,11 @@ module.exports = {
     mockUsers,
     mockProjects,
     mockVariants,
+    mockNotifications,
+    mockAdminActionLogs,
+    mockDeletedAccounts,
+    mockSupportTickets,
+    mockSupportMessages,
     mockMotors,
     mockBearings
 };

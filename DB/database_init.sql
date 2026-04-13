@@ -7,6 +7,11 @@ USE gearbox_db;
 
 -- 2. Xóa các bảng cũ (nếu có) để tránh xung đột
 DROP TABLE IF EXISTS design_variants;
+DROP TABLE IF EXISTS admin_action_logs;
+DROP TABLE IF EXISTS deleted_accounts;
+DROP TABLE IF EXISTS support_messages;
+DROP TABLE IF EXISTS support_tickets;
+DROP TABLE IF EXISTS notifications;
 DROP TABLE IF EXISTS projects;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS motors;
@@ -22,7 +27,17 @@ CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
+    password_plain TEXT NULL,
+    email VARCHAR(255) NULL,
     role VARCHAR(50) DEFAULT 'USER', -- 'USER' hoặc 'ADMIN'
+    is_banned BOOLEAN NOT NULL DEFAULT FALSE,
+    ban_reason TEXT NULL,
+    banned_by INT NULL,
+    banned_at DATETIME NULL,
+    language VARCHAR(10) NOT NULL DEFAULT 'vi',
+    theme VARCHAR(20) NOT NULL DEFAULT 'light',
+    last_login_at DATETIME NULL,
+    last_seen_at DATETIME NULL,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_username (username)
@@ -46,7 +61,115 @@ CREATE TABLE projects (
 );
 
 -- ====================================
--- 5. BẢNG MOTORS (Thư viện động cơ)
+-- 5. BẢNG NOTIFICATIONS (Thông báo người dùng)
+-- ====================================
+CREATE TABLE notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    type VARCHAR(100) NOT NULL DEFAULT 'SYSTEM',
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    metadata JSON NULL,
+    is_read BOOLEAN NOT NULL DEFAULT FALSE,
+    is_pinned BOOLEAN NOT NULL DEFAULT FALSE,
+    pinned_at DATETIME NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_notification_user (user_id),
+    INDEX idx_notification_read (is_read),
+    INDEX idx_notification_pinned (is_pinned)
+);
+
+-- ====================================
+-- 5.1 BẢNG SUPPORT_TICKETS (Ticket hỗ trợ)
+-- ====================================
+CREATE TABLE support_tickets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ticket_code VARCHAR(48) NOT NULL UNIQUE,
+    user_id INT NOT NULL,
+    subject VARCHAR(255) NOT NULL,
+    priority VARCHAR(20) NOT NULL DEFAULT 'normal',
+    status VARCHAR(20) NOT NULL DEFAULT 'open',
+    created_by_name VARCHAR(120) NOT NULL,
+    created_by_email VARCHAR(255) NULL,
+    user_edit_count INT NOT NULL DEFAULT 0,
+    user_edited_at DATETIME NULL,
+    banned_by_admin_id INT NULL,
+    banned_reason TEXT NULL,
+    banned_at DATETIME NULL,
+    deleted_by_admin_id INT NULL,
+    deleted_by_admin_reason TEXT NULL,
+    deleted_by_admin_at DATETIME NULL,
+    deleted_by_user_reason TEXT NULL,
+    deleted_by_user_at DATETIME NULL,
+    last_message_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_message_by_role VARCHAR(20) NOT NULL DEFAULT 'USER',
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_support_ticket_user (user_id),
+    INDEX idx_support_ticket_last_message (last_message_at)
+);
+
+-- ====================================
+-- 5.2 BẢNG SUPPORT_MESSAGES (Tin nhắn theo ticket)
+-- ====================================
+CREATE TABLE support_messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ticket_id INT NOT NULL,
+    sender_user_id INT NOT NULL,
+    sender_role VARCHAR(20) NOT NULL DEFAULT 'USER',
+    message TEXT NOT NULL,
+    is_edited BOOLEAN NOT NULL DEFAULT FALSE,
+    edited_count INT NOT NULL DEFAULT 0,
+    edited_at DATETIME NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (ticket_id) REFERENCES support_tickets(id) ON DELETE CASCADE,
+    FOREIGN KEY (sender_user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_support_message_ticket (ticket_id)
+);
+
+-- ====================================
+-- 6. BẢNG MOTORS (Thư viện động cơ)
+-- ====================================
+CREATE TABLE deleted_accounts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    original_user_id INT NULL,
+    username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NULL,
+    deleted_by_user_id INT NOT NULL,
+    deleted_by_username VARCHAR(255) NOT NULL,
+    reason TEXT NULL,
+    metadata JSON NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_deleted_username (username),
+    INDEX idx_deleted_by_user_id (deleted_by_user_id)
+);
+
+CREATE TABLE admin_action_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    admin_user_id INT NOT NULL,
+    admin_username VARCHAR(255) NOT NULL,
+    action_type VARCHAR(100) NOT NULL,
+    target_user_id INT NULL,
+    target_username VARCHAR(255) NULL,
+    target_project_id INT NULL,
+    target_project_name VARCHAR(255) NULL,
+    reason TEXT NULL,
+    payload JSON NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_admin_action_type (action_type),
+    INDEX idx_admin_user_id (admin_user_id),
+    INDEX idx_target_user_id (target_user_id),
+    INDEX idx_target_project_id (target_project_id)
+);
+
+-- ====================================
+-- 6. BẢNG MOTORS (Thư viện động cơ)
 -- ====================================
 CREATE TABLE motors (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -59,7 +182,7 @@ CREATE TABLE motors (
 );
 
 -- ====================================
--- 6. BẢNG GEAR_MATERIALS (Vật liệu bánh răng)
+-- 7. BẢNG GEAR_MATERIALS (Vật liệu bánh răng)
 -- ====================================
 CREATE TABLE gear_materials (
     name VARCHAR(255) PRIMARY KEY,
@@ -69,7 +192,7 @@ CREATE TABLE gear_materials (
 );
 
 -- ====================================
--- 7. BẢNG BELTS (Thư viện đai truyền)
+-- 8. BẢNG BELTS (Thư viện đai truyền)
 -- ====================================
 CREATE TABLE belts (
     type VARCHAR(50) PRIMARY KEY, -- Loại đai: A, B, C...
@@ -80,7 +203,7 @@ CREATE TABLE belts (
 );
 
 -- ====================================
--- 8. BẢNG STD_TOLERANCES (Dung sai tiêu chuẩn)
+-- 9. BẢNG STD_TOLERANCES (Dung sai tiêu chuẩn)
 -- ====================================
 CREATE TABLE std_tolerances (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -93,7 +216,7 @@ CREATE TABLE std_tolerances (
 );
 
 -- ====================================
--- 9. BẢNG BEARINGS (Thư viện ổ lăn)
+-- 10. BẢNG BEARINGS (Thư viện ổ lăn)
 -- ====================================
 CREATE TABLE bearings (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -109,7 +232,7 @@ CREATE TABLE bearings (
 );
 
 -- ====================================
--- 10. BẢNG DESIGN_VARIANTS (Phương án thiết kế)
+-- 11. BẢNG DESIGN_VARIANTS (Phương án thiết kế)
 -- ====================================
 CREATE TABLE design_variants (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -127,10 +250,19 @@ CREATE TABLE design_variants (
 -- ====================================
 -- SEED DATA - NGƯỜI DÙNG
 -- ====================================
-INSERT INTO users (username, password_hash, role) VALUES 
-('admin', '$2a$10$4pHwX3U8ZR0qJ3V9K7L2euHJXfIvLU2e4n5n6o7p8Q/BQa3E8U5/y', 'ADMIN'),
-('user1', '$2a$10$9R3e4f5G6h7I8j9K0l1M2nOaBbCcDdEeFfGgHhIiJjKkLlMmNnOo', 'USER'),
-('user2', '$2a$10$PpQqRrSsT7U8v9VwXxYyZzAaBbCcDdEeFfGgHhIiJjKkLlMmNnOo', 'USER');
+INSERT INTO users (username, password_hash, password_plain, email, role, is_banned, ban_reason, banned_by, banned_at, language, theme, last_login_at, last_seen_at) VALUES 
+('admin', '$2b$10$dqy6pTZjSz4dzSwW13HU7eFpHHGFGVfHSHfNkPGzXXoCXu3vziGh2', 'test', 'admin@gearbox.local', 'ADMIN', FALSE, NULL, NULL, NULL, 'vi', 'light', NULL, NULL),
+('user1', '$2b$10$dqy6pTZjSz4dzSwW13HU7eFpHHGFGVfHSHfNkPGzXXoCXu3vziGh2', 'test', 'user1@gearbox.local', 'USER', FALSE, NULL, NULL, NULL, 'vi', 'light', NULL, NULL),
+('user2', '$2b$10$dqy6pTZjSz4dzSwW13HU7eFpHHGFGVfHSHfNkPGzXXoCXu3vziGh2', 'test', 'user2@gearbox.local', 'USER', FALSE, NULL, NULL, NULL, 'vi', 'light', NULL, NULL);
+
+INSERT INTO notifications (user_id, type, title, message, metadata, is_read, is_pinned, pinned_at) VALUES
+(2, 'WELCOME', 'Chào mừng', 'Tài khoản của bạn đã sẵn sàng. Hãy bắt đầu dự án đầu tiên.', JSON_OBJECT('source', 'seed'), FALSE, FALSE, NULL);
+
+INSERT INTO support_tickets (ticket_code, user_id, subject, priority, status, created_by_name, created_by_email, last_message_at, last_message_by_role) VALUES
+('SUP-DEMO-001', 2, 'Can ho tro kiem tra bo truyen', 'normal', 'open', 'user1', 'user1@gearbox.local', CURRENT_TIMESTAMP, 'USER');
+
+INSERT INTO support_messages (ticket_id, sender_user_id, sender_role, message) VALUES
+((SELECT id FROM support_tickets WHERE ticket_code = 'SUP-DEMO-001' LIMIT 1), 2, 'USER', 'Toi can ho tro de danh gia phuong an thiet ke hien tai.');
 
 -- ====================================
 -- SEED DATA - ĐỘNG CƠ

@@ -3,6 +3,11 @@ const beltService = require('../services/belt.service');
 const gearService = require('../services/gear.service');
 const shaftService = require('../services/shaft.service');
 
+const parsePositiveNumber = (value) => {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+};
+
 // Bước 1: Tính Động Cơ
 // THÊM CHỮ async VÀO ĐÂY
 const calcMotor = async (req, res) => {
@@ -26,9 +31,27 @@ const calcMotor = async (req, res) => {
 // Bước 2: Tính Bộ truyền đai
 const calcBelt = async (req, res) => {
     try {
-        const { uBelt, d1, power, n1 } = req.body;
-        // Gọi Service chờ lấy dữ liệu từ bảng Belts trong MySQL
-        const result = await beltService.calculateBeltDrive(uBelt, d1, power, n1);
+        const { uBelt, ratio, d1, power, n1, speed } = req.body;
+        const normalizedPower = parsePositiveNumber(power);
+        const normalizedSpeed = parsePositiveNumber(n1 ?? speed);
+        const normalizedRatio = parsePositiveNumber(uBelt ?? ratio) || 3;
+        const normalizedD1 = parsePositiveNumber(d1);
+
+        if (!normalizedPower) {
+            return res.status(400).json({ success: false, message: 'Thiếu hoặc sai giá trị power' });
+        }
+
+        if (!normalizedSpeed) {
+            return res.status(400).json({ success: false, message: 'Thiếu hoặc sai giá trị tốc độ n1/speed' });
+        }
+
+        // Gọi service theo đúng thứ tự tham số: power, speed, ratio
+        const result = await beltService.calculateBeltDrive(
+            normalizedPower,
+            normalizedSpeed,
+            normalizedRatio,
+            { d1: normalizedD1 }
+        );
         return res.status(200).json({ success: true, data: result });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
@@ -59,8 +82,16 @@ const calcSpurGear = async (req, res) => {
 // Bước 5: Tính Trục sơ bộ
 const calcShaft = async (req, res) => {
     try {
-        const { T, Mx, My, materialName } = req.body;
-        const result = await shaftService.calculateShaft(T, Mx, My, materialName);
+        const { T, torque, Mx, momentX, My, momentY, materialName } = req.body;
+        const torqueValue = parsePositiveNumber(T ?? torque);
+        const mxValue = parsePositiveNumber(Mx ?? momentX) || 300;
+        const myValue = parsePositiveNumber(My ?? momentY) || 250;
+
+        if (!torqueValue) {
+            return res.status(400).json({ success: false, message: 'Thiếu hoặc sai giá trị mô-men xoắn T/torque' });
+        }
+
+        const result = await shaftService.calculateShaft(torqueValue, mxValue, myValue, materialName);
         return res.status(200).json({ success: true, data: result });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });

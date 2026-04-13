@@ -1,114 +1,137 @@
-﻿# CNPM DADN - Gearbox Engineering Workspace
+﻿# Gearbox Engineering (CNPM DADN)
 
-This repository is a workspace for mechanical drivetrain design and calculation tasks (motor selection, transmission ratio, and operating parameters). It is organized into a backend API, a frontend UI, and layout prototypes for each workflow step.
+Gearbox Engineering is a full-stack web application for gearbox design workflows. It includes a 5-step engineering wizard, project management, AI assistant support, ticket-based user support, notifications, and admin audit logging.
 
-## 1. Quick Overview
+## Overview
 
-### Project goals
-- Keep business logic (BE), UI (FE), and design/prototype assets (`layout`) clearly separated.
-- Provide a foundation for an end-to-end engineering workflow from Step 1 to Step 5.
+The repository has two main applications:
 
-### High-level architecture
+- FE: React + Vite frontend for wizard, dashboard, support, settings, and account pages.
+- BE: Express + Sequelize backend for authentication, engineering APIs, exports, support, notifications, and admin operations.
 
-| Area | Stack | Responsibility |
-|---|---|---|
-| `BE/` | Node.js + Express | API and engineering calculation logic |
-| `FE/` | React + Vite | Web user interface |
-| `layout/stitch/` | HTML prototypes + design docs | UX flow drafts and visual direction |
-| `DB/` | Placeholder | Future database integration |
+The goal is to keep the design flow continuous: input parameters -> run calculations -> validate -> export reports -> track and support users.
 
-## 2. Repository Map
+## Current Features
+
+### 1. 5-Step Wizard
+
+- Step 1: Input parameters.
+- Step 2: Motor selection.
+- Step 3: Transmission design (belt/gear).
+- Step 4: Shaft and bearing design.
+- Step 5: Validation and report export.
+
+### 2. Dashboard
+
+- Project list and search.
+- Quick reopen to wizard.
+- Edit/delete project actions.
+- Overview metrics.
+
+### 3. Notifications
+
+- Dashboard bell preview shows unread items only.
+- Mark read, mark all read, pin/unpin, and delete actions.
+- Full table page at /notifications.
+
+### 4. Admin Audit Log
+
+- Tracks admin actions (ban/delete account, delete project, role changes, credential reveal, etc.).
+- Dashboard admin section previews latest unread audit logs only.
+- Full table page at /admin/audit-logs.
+- Supports mark read and mark all read.
+
+### 5. Support Center
+
+- Users create tickets and follow discussion threads.
+- Admin manages all tickets, replies, and moderation actions.
+
+### 6. AI Assistant
+
+- Dedicated page for AI-assisted guidance in workflow and calculations.
+
+### 7. Bilingual UI
+
+- Vietnamese and English language support for the main UI flows.
+
+## Repository Structure
 
 ```text
 CNPM DADN/
-├─ README.md
-├─ package.json
-├─ .gitignore
 ├─ BE/
 │  ├─ app.js
-│  ├─ server.js
+│  ├─ config/
 │  ├─ controllers/
-│  ├─ services/
-│  ├─ routes/
+│  ├─ middlewares/
 │  ├─ models/
+│  ├─ routes/
+│  ├─ services/
+│  ├─ scripts/
 │  └─ utils/
 ├─ FE/
 │  ├─ src/
-│  ├─ components/
-│  ├─ layouts/
-│  ├─ pages/
-│  ├─ routes/
-│  ├─ services/
-│  ├─ utils/
-│  └─ vite.config.js
+│  │  ├─ api/
+│  │  ├─ components/
+│  │  ├─ context/
+│  │  ├─ i18n/
+│  │  ├─ pages/
+│  │  ├─ services/
+│  │  ├─ styles/
+│  │  └─ utils/
+│  └─ public/
 ├─ DB/
-└─ layout/
-   └─ stitch/
-      ├─ blueprint_precision/
-      ├─ project_dashboard/
-      ├─ step_1_input_parameters/
-      ├─ step_2_motor_selection/
-      ├─ step_3_transmission_design/
-      ├─ step_4_bearing_comparison/
-      ├─ step_4_shaft_bearing_design/
-      └─ step_5_validation_analysis/
+├─ layout/
+├─ setup_database.sql
+└─ README.md
 ```
 
-## 3. Current Codebase Status
+## Environment Requirements
 
-### Backend
-- The practical entry point for local testing is `BE/app.js`.
-- Active API route: `POST /api/motor/calculate`.
-- `BE/server.js` and `BE/routes/calculateRoutes.js` are currently in a draft/refactor state and are not aligned with the active flow.
-- Some model/utility files are still placeholders (`models/motor.model.js`, `models/project.model.js`, `utils/exportReport.js`).
+- Node.js 18+ (Node 20 recommended)
+- npm 9+
+- MySQL (when SKIP_DB=false)
 
-### Frontend
-- The frontend is still at the Vite/React starter stage (`FE/src/App.jsx`).
-- Folders such as `components`, `pages`, `layouts`, `routes`, `services`, and `utils` are prepared but not implemented yet.
+Use one runtime environment consistently (WSL or Windows) to avoid node_modules mismatch issues.
 
-### Layout and Design
-- `layout/stitch/` contains workflow prototypes (dashboard + Step 1 to Step 5).
-- `layout/stitch/blueprint_precision/DESIGN.md` contains the design-system direction and UI rules.
+## Installation
 
-## 4. Installation Guide (Important)
-
-> `node_modules` must not be committed to git.
-> After cloning this repo, every contributor must run `npm install`.
-
-### Prerequisites
-- Node.js: recommended `20+`
-- npm: recommended `10+`
-
-### Step 1 - Clone
+From the repository root:
 
 ```bash
-git clone <repo-url>
-cd "CNPM DADN"
-```
-
-### Step 2 - Install dependencies
-
-Use either approach below.
-
-1. Install package sets one by one:
-
-```bash
-npm install
-cd BE && npm install
-cd ../FE && npm install
-```
-
-2. Install from root using prefixes:
-
-```bash
-npm install
 npm --prefix BE install
 npm --prefix FE install
 ```
 
-## 5. Run Locally
+## Backend Configuration (.env)
 
-Open 2 terminals.
+Create BE/.env.
+
+### Mock Mode (no DB required)
+
+```env
+PORT=8080
+SKIP_DB=true
+JWT_SECRET=change_me
+```
+
+### MySQL Mode
+
+```env
+PORT=8080
+SKIP_DB=false
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_NAME=gearbox_db
+DB_USER=root
+DB_PASSWORD=
+JWT_SECRET=change_me
+```
+
+Note: when running app.js, backend compatibility migration can add missing columns for users, notifications, support tables, and admin_action_logs.
+
+## Run Locally
+
+Use two terminals.
 
 ### Terminal 1 - Backend
 
@@ -117,7 +140,7 @@ cd BE
 node app.js
 ```
 
-Backend default URL: `http://localhost:3000`
+Default backend URL: http://localhost:8080
 
 ### Terminal 2 - Frontend
 
@@ -126,65 +149,112 @@ cd FE
 npm run dev
 ```
 
-Frontend default URL: `http://localhost:5173`
+Default frontend URL: http://localhost:5173
 
-## 6. Available API (Current)
+## Frontend API Base URL
 
-### `POST /api/motor/calculate`
+Axios client is configured at FE/src/api/axiosClient.js.
 
-Endpoint:
+- Default: http://localhost:8080/api/v1
+- Optional override via FE/.env:
 
-```text
-http://localhost:3000/api/motor/calculate
+```env
+VITE_API_BASE_URL=http://localhost:8080
 ```
 
-Sample request body:
+The client normalizes this value and appends /api/v1 when needed.
 
-```json
-{
-  "P_ct": 7.5,
-  "n_ct": 145,
-  "efficiencies": {
-    "belt": 0.95,
-    "gear": 0.97,
-    "bearing": 0.99
-  }
-}
+## Important Frontend Routes
+
+- /login
+- /register
+- /dashboard
+- /wizard/:step
+- /notifications
+- /admin/audit-logs
+- /support
+- /assistant
+- /settings
+- /profile
+
+## Main API Groups
+
+All API paths are under /api/v1.
+
+### Auth
+
+- POST /auth/register
+- POST /auth/login
+- GET /auth/me
+- PUT /auth/me
+- PUT /auth/change-password
+
+### Project/Calculation
+
+- GET /project/my-projects
+- POST /project/create
+- PUT /project/:id
+- DELETE /project/:id
+- POST /calculate/*
+- POST /motor/calculate
+
+### Support/Notification
+
+- GET /support/tickets
+- POST /support/contact
+- GET /notification/my
+- PUT /notification/:id/read
+- PUT /notification/read-all
+
+### Admin
+
+- GET /admin/users
+- GET /admin/projects
+- GET /admin/action-logs
+- PUT /admin/action-logs/:id/read
+- PUT /admin/action-logs/read-all
+- PUT /admin/users/:id/ban
+- DELETE /admin/users/:id
+
+## Troubleshooting
+
+### 1. API path not found
+
+- Make sure backend is running from app.js.
+- Verify FE is calling the correct base URL (/api/v1).
+- Verify endpoint exists in backend routes.
+
+### 2. PowerShell npm.ps1 execution policy issue
+
+Use:
+
+```powershell
+npm.cmd run dev
+npm.cmd run build
 ```
 
-Notes:
-- The service/controller calculation flow exists.
-- The motor lookup model (`BE/models/motor.model.js`) is still empty and should implement `findSuitableMotor` for real lookup behavior.
+Or run commands from WSL terminal.
 
-## 7. .gitignore and node_modules Notes
+### 3. Git "detected dubious ownership"
 
-Make sure `.gitignore` contains the following:
+Run:
 
-```gitignore
-.env
-node_modules/
+```bash
+git config --global --add safe.directory '/home/dmin/DADN/CNPM DADN'
 ```
 
-What this means:
-- `node_modules/` stays out of git history.
-- New contributors must reinstall dependencies after cloning.
-- If you get `Cannot find module ...`, follow this order:
-  1. Confirm you are in the correct folder (`BE` or `FE`).
-  2. Run `npm install` in that folder.
-  3. Run the start command again (`node app.js` or `npm run dev`).
+### 4. Database connection issue
 
-## 8. Suggested Next Improvements
+- Temporarily switch to SKIP_DB=true for quick testing.
+- Recheck DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD.
 
-- Add scripts in `BE/package.json`:
-  - `"start": "node app.js"`
-  - `"dev": "nodemon app.js"` (if using nodemon)
-- Consolidate the duplicate/draft calculation route flow (`server.js` and `routes/calculateRoutes.js`).
-- Connect FE to real API calls (for example with a dedicated `FE/services/api.js`).
+## Development Notes
 
----
+- Do not commit node_modules.
+- Do not commit .env files.
+- If schema changes are made, update SQL scripts and keep compatibility migration in app.js in sync.
 
-If you just cloned the repo and want to run it quickly:
+## Operational Notes
 
-1. Install dependencies for root, `BE`, and `FE`.
-2. Run backend: `cd BE && node app.js`.
-3. Run frontend: `cd FE && npm run dev`.
+- Restart backend after changing routes/controllers/models.
+- If legacy data causes schema mismatch, run app.js so compatibility migration can apply before testing.

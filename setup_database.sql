@@ -13,10 +13,14 @@ CREATE TABLE IF NOT EXISTS users (
     id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
+    password_plain TEXT,
     email VARCHAR(100),
     role VARCHAR(20) DEFAULT 'user',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    is_banned BOOLEAN NOT NULL DEFAULT FALSE,
+    language VARCHAR(10) NOT NULL DEFAULT 'vi',
+    theme VARCHAR(20) NOT NULL DEFAULT 'light',
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- ============================================
@@ -31,6 +35,74 @@ CREATE TABLE IF NOT EXISTS projects (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- ============================================
+-- NOTIFICATIONS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS notifications (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    type VARCHAR(100) DEFAULT 'SYSTEM',
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    metadata JSON,
+    is_read BOOLEAN NOT NULL DEFAULT FALSE,
+    is_pinned BOOLEAN NOT NULL DEFAULT FALSE,
+    pinned_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- ============================================
+-- SUPPORT TICKETS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS support_tickets (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    ticket_code VARCHAR(48) NOT NULL UNIQUE,
+    user_id INT NOT NULL,
+    subject VARCHAR(255) NOT NULL,
+    priority VARCHAR(20) NOT NULL DEFAULT 'normal',
+    status VARCHAR(20) NOT NULL DEFAULT 'open',
+    created_by_name VARCHAR(120) NOT NULL,
+    created_by_email VARCHAR(255),
+    user_edit_count INT NOT NULL DEFAULT 0,
+    user_edited_at TIMESTAMP NULL,
+    banned_by_admin_id INT NULL,
+    banned_reason TEXT NULL,
+    banned_at TIMESTAMP NULL,
+    deleted_by_admin_id INT NULL,
+    deleted_by_admin_reason TEXT NULL,
+    deleted_by_admin_at TIMESTAMP NULL,
+    deleted_by_user_reason TEXT NULL,
+    deleted_by_user_at TIMESTAMP NULL,
+    last_message_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_message_by_role VARCHAR(20) NOT NULL DEFAULT 'USER',
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_support_ticket_user (user_id),
+    INDEX idx_support_ticket_last_message (last_message_at)
+);
+
+-- ============================================
+-- SUPPORT MESSAGES TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS support_messages (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    ticket_id INT NOT NULL,
+    sender_user_id INT NOT NULL,
+    sender_role VARCHAR(20) NOT NULL DEFAULT 'USER',
+    message TEXT NOT NULL,
+    is_edited BOOLEAN NOT NULL DEFAULT FALSE,
+    edited_count INT NOT NULL DEFAULT 0,
+    edited_at TIMESTAMP NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (ticket_id) REFERENCES support_tickets(id) ON DELETE CASCADE,
+    FOREIGN KEY (sender_user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_support_message_ticket (ticket_id)
 );
 
 -- ============================================
@@ -74,10 +146,19 @@ CREATE TABLE IF NOT EXISTS tolerances (
 -- ============================================
 
 -- Sample users
-INSERT INTO users (username, password_hash, email, role) VALUES
-('admin', '$2a$10$test', 'admin@gearbox.local', 'admin'),
-('user1', '$2a$10$test', 'user1@gearbox.local', 'user'),
-('user2', '$2a$10$test', 'user2@gearbox.local', 'user');
+INSERT INTO users (username, password_hash, password_plain, email, role, is_banned, language, theme) VALUES
+('admin', '$2b$10$dqy6pTZjSz4dzSwW13HU7eFpHHGFGVfHSHfNkPGzXXoCXu3vziGh2', 'test', 'admin@gearbox.local', 'ADMIN', FALSE, 'vi', 'light'),
+('user1', '$2b$10$dqy6pTZjSz4dzSwW13HU7eFpHHGFGVfHSHfNkPGzXXoCXu3vziGh2', 'test', 'user1@gearbox.local', 'USER', FALSE, 'vi', 'light'),
+('user2', '$2b$10$dqy6pTZjSz4dzSwW13HU7eFpHHGFGVfHSHfNkPGzXXoCXu3vziGh2', 'test', 'user2@gearbox.local', 'USER', FALSE, 'vi', 'light');
+
+INSERT INTO notifications (user_id, type, title, message, metadata, is_read, is_pinned, pinned_at) VALUES
+(2, 'WELCOME', 'Welcome', 'Your account is ready. Start your first gearbox project.', JSON_OBJECT('source', 'seed'), FALSE, FALSE, NULL);
+
+INSERT INTO support_tickets (ticket_code, user_id, subject, priority, status, created_by_name, created_by_email, last_message_at, last_message_by_role) VALUES
+('SUP-DEMO-001', 2, 'Yeu cau ho tro ban dau', 'normal', 'open', 'engineer1', 'engineer1@gearbox.local', CURRENT_TIMESTAMP, 'USER');
+
+INSERT INTO support_messages (ticket_id, sender_user_id, sender_role, message) VALUES
+((SELECT id FROM support_tickets WHERE ticket_code = 'SUP-DEMO-001' LIMIT 1), 2, 'USER', 'Toi can ho tro de kiem tra bo truyen cho du an moi.');
 
 -- Sample motors
 INSERT INTO motors (name, power_kw, efficiency, cost) VALUES
