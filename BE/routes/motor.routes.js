@@ -1,8 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const motorController = require('../controllers/motor.controller');
+const calculationController = require('../controllers/calculation.controller');
+const { verifyToken } = require('../middlewares/auth.middleware');
 
-// Khi Frontend gọi POST /api/motor/calculate, hệ thống sẽ chạy hàm trong controller
-router.post('/calculate', motorController.getMotorcalculate);
+/**
+ * Phase 2 Update: Route to new calculation.controller which includes
+ * proper load/life factor integration (K_load, φ_d)
+ * 
+ * FE calls: POST /api/v1/motor/calculate
+ * This routes to: calculationController.calcMotor
+ */
+router.post('/calculate', verifyToken, calculationController.calcMotor);
 
 module.exports = router;

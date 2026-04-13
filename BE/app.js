@@ -50,6 +50,8 @@ const authRoutes = require('./routes/auth.routes');
 const variantRoutes = require('./routes/variant.routes');
 const calculationRoutes = require('./routes/calculation.routes');
 const projectRoutes = require('./routes/project.routes');
+const bearingRoutes = require('./routes/bearing.routes');
+const exportController = require('./controllers/export.controller');
 
 // ==========================================
 // 3. GẮN ROUTES
@@ -59,6 +61,10 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/variants', variantRoutes);
 app.use('/api/v1/calculate', calculationRoutes);
 app.use('/api/v1/project', projectRoutes);
+app.use('/api/v1/bearings', bearingRoutes);
+
+// Export route (POST) - for PDF and Word export from wizard
+app.post('/api/v1/export', exportController.exportReport);
 
 // Xử lý lỗi 404 (Của bạn kia)
 app.use((req, res) => {
@@ -88,7 +94,10 @@ if (SKIP_DB) {
     });
 } else {
     // ✅ Chế độ Normal - kết nối MySQL
-    sequelize.sync({ alter: true })
+    // Disable foreign key checks for clean sync in development
+    sequelize.query('SET FOREIGN_KEY_CHECKS=0')
+        .then(() => sequelize.sync({ force: true }))
+        .then(() => sequelize.query('SET FOREIGN_KEY_CHECKS=1'))
         .then(() => {
             console.log(`🎉 Đã kết nối thành công với MySQL Local (Database: ${process.env.DB_NAME})!`);
             const server = app.listen(PORT, () => {

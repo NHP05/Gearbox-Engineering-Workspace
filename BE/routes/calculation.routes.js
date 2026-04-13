@@ -9,5 +9,8 @@ router.post('/belt', verifyToken, calcController.calcBelt);
 router.post('/gear/bevel', verifyToken, calcController.calcBevelGear);
 router.post('/gear/spur', verifyToken, calcController.calcSpurGear);
 router.post('/shaft', verifyToken, calcController.calcShaft);
-// Thêm dòng này:
+
+// Integrated full gearbox calculation (từ công suất input → toàn bộ design)
+router.post('/full', verifyToken, calcController.calcFullGearbox);
+
 module.exports = router;

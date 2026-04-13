@@ -5,11 +5,11 @@ import WizardScaffold from './WizardScaffold';
 
 const Step3TransmissionDesign = ({ onNext, onBack }) => {
     const [inputs, setInputs] = useState({
-        power: 15.5,
-        speed: 1440,
+        power: 6.5,
+        n_motor: 1440,
+        u_belt: 1.3,
         serviceFactor: 1.2,
         centerDistance: 450,
-        beltType: 'vbelt',
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -26,8 +26,12 @@ const Step3TransmissionDesign = ({ onNext, onBack }) => {
         setLoading(true);
         setError('');
         try {
-            // Call belt calculation API
-            const response = await axiosClient.post('/calculate/belt', inputs);
+            // Call belt calculation API with correct parameter names
+            const response = await axiosClient.post('/calculate/belt', {
+                power: inputs.power,
+                n_motor: inputs.n_motor,
+                u_belt: inputs.u_belt
+            });
             localStorage.setItem('step3_result', JSON.stringify(response.data));
             onNext();
         } catch (err) {
@@ -69,10 +73,10 @@ const Step3TransmissionDesign = ({ onNext, onBack }) => {
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-6">
-                                    <div className="space-y-2"><label htmlFor="pwr" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Input Power (kW)</label><input id="pwr" className="w-full bg-[#edeeef] border-none rounded-lg p-3 text-sm font-medium" type="number" defaultValue="15.5" /></div>
-                                    <div className="space-y-2"><label htmlFor="spd" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Input Speed (RPM)</label><input id="spd" className="w-full bg-[#edeeef] border-none rounded-lg p-3 text-sm font-medium" type="number" defaultValue="1440" /></div>
-                                    <div className="space-y-2"><label htmlFor="svc" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Service Factor</label><select id="svc" className="w-full bg-[#edeeef] border-none rounded-lg p-3 text-sm font-medium"><option>1.2 - Moderate Shock</option><option>1.5 - Heavy Duty</option><option>2.0 - Intermittent Peak</option></select></div>
-                                    <div className="space-y-2"><label htmlFor="ctr" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Center Distance (mm)</label><input id="ctr" className="w-full bg-[#edeeef] border-none rounded-lg p-3 text-sm font-medium" type="number" defaultValue="450" /></div>
+                                    <div className="space-y-2"><label htmlFor="pwr" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Input Power (kW)</label><input id="pwr" name="power" className="w-full bg-[#edeeef] border-none rounded-lg p-3 text-sm font-medium" type="number" value={inputs.power} onChange={handleChange} /></div>
+                                    <div className="space-y-2"><label htmlFor="spd" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Motor Speed (RPM)</label><input id="spd" name="n_motor" className="w-full bg-[#edeeef] border-none rounded-lg p-3 text-sm font-medium" type="number" value={inputs.n_motor} onChange={handleChange} /></div>
+                                    <div className="space-y-2"><label htmlFor="ubelt" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Belt Ratio (u_belt)</label><input id="ubelt" name="u_belt" className="w-full bg-[#edeeef] border-none rounded-lg p-3 text-sm font-medium" type="number" step="0.1" min="1.0" max="3.0" value={inputs.u_belt} onChange={handleChange} /></div>
+                                    <div className="space-y-2"><label htmlFor="svc" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Service Factor</label><select id="svc" name="serviceFactor" className="w-full bg-[#edeeef] border-none rounded-lg p-3 text-sm font-medium" value={inputs.serviceFactor} onChange={handleChange}><option value="1.2">1.2 - Moderate Shock</option><option value="1.5">1.5 - Heavy Duty</option><option value="2.0">2.0 - Intermittent Peak</option></select></div>
                                 </div>
                             </section>
 

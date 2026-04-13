@@ -1,17 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import axiosClient from '../../api/axiosClient';
 import WizardScaffold from './WizardScaffold';
 
 const Step1Motor = ({ onNext }) => {
     const [inputs, setInputs] = useState({
-        power: 15.5,
-        speed: 1450,
-        loadType: 'constant',
-        life: 20000,
+        power: 6.5,
+        speed: 1440,
+        loadType: 'light_shock_2shift',
+        life: 9,
+        lifeUnit: 'years',
+    });
+    const [calculation, setCalculation] = useState({
+        torque: null,
+        efficiency: null,
+        loadFactor: null,
+        lifeFactor: null,
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+
+    // Auto-calculate motor when inputs change
+    useEffect(() => {
+        const autoCalculate = async () => {
+            try {
+                const response = await axiosClient.post('/motor/calculate', inputs);
+                if (response.data) {
+                    setCalculation({
+                        torque: response.data.motor_torque_Nm?.toFixed(1),
+                        efficiency: (response.data.efficiency * 100)?.toFixed(1),
+                        loadFactor: response.data.load_factor_applied,
+                        lifeFactor: response.data.life_factor_applied,
+                    });
+                }
+            } catch (err) {
+                console.error('Auto-calculation error:', err);
+            }
+        };
+        autoCalculate();
+    }, [inputs]);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -28,6 +55,7 @@ const Step1Motor = ({ onNext }) => {
             const response = await axiosClient.post('/motor/calculate', inputs);
             // Lưu kết quả vào localStorage để step tiếp theo dùng
             localStorage.setItem('step1_result', JSON.stringify(response.data));
+            localStorage.setItem('motorInputs', JSON.stringify(inputs));
             onNext();
         } catch (err) {
             const message = err?.response?.data?.message || 'Lỗi tính toán motor. Vui lòng kiểm tra lại.';
@@ -96,51 +124,84 @@ const Step1Motor = ({ onNext }) => {
                                     <div className="space-y-3">
                                         <p className="text-sm font-semibold text-[#191c1d]">Load Characteristic</p>
                                         <div className="grid grid-cols-2 gap-4">
-                                            <label className={`relative p-4 bg-[#f8f9fa] rounded-xl border-2 cursor-pointer ${inputs.loadType === 'constant' ? 'border-[#0058be]' : 'border-transparent'}`}>
+                                            <label className={`relative p-4 bg-[#f8f9fa] rounded-xl border-2 cursor-pointer transition ${inputs.loadType === 'constant' ? 'border-[#0058be] bg-[#0058be]/5' : 'border-transparent'}`}>
                                                 <input type="radio" name="loadType" value="constant" checked={inputs.loadType === 'constant'} onChange={handleChange} className="hidden" />
                                                 <div className="flex items-center gap-2 mb-2">
-                                                    <span className="material-symbols-outlined text-[#0058be]">bolt</span>
+                                                    <span className="material-symbols-outlined text-[#0058be] text-lg">bolt</span>
                                                     <span className="text-sm font-bold">Constant</span>
                                                 </div>
-                                                <p className="text-[11px] text-slate-500">Uniform torque with minimal variations. Ideal for fans or pumps.</p>
+                                                <p className="text-[11px] text-slate-500">K_load = 1.0</p>
                                             </label>
 
-                                            <label className={`relative p-4 bg-[#f8f9fa] rounded-xl border-2 cursor-pointer ${inputs.loadType === 'fluctuating' ? 'border-[#0058be]' : 'border-transparent'}`}>
-                                                <input type="radio" name="loadType" value="fluctuating" checked={inputs.loadType === 'fluctuating'} onChange={handleChange} className="hidden" />
+                                            <label className={`relative p-4 bg-[#f8f9fa] rounded-xl border-2 cursor-pointer transition ${inputs.loadType === 'light_shock_1shift' ? 'border-[#0058be] bg-[#0058be]/5' : 'border-transparent'}`}>
+                                                <input type="radio" name="loadType" value="light_shock_1shift" checked={inputs.loadType === 'light_shock_1shift'} onChange={handleChange} className="hidden" />
                                                 <div className="flex items-center gap-2 mb-2">
-                                                    <span className="material-symbols-outlined text-slate-400">waves</span>
-                                                    <span className="text-sm font-bold">Fluctuating</span>
+                                                    <span className="material-symbols-outlined text-[#ffa500] text-lg">flash_on</span>
+                                                    <span className="text-sm font-bold">Light Shock 1-Shift</span>
                                                 </div>
-                                                <p className="text-[11px] text-slate-500">Variable torque with shocks. Suitable for crushers or excavators.</p>
+                                                <p className="text-[11px] text-slate-500">K_load = 1.25</p>
+                                            </label>
+
+                                            <label className={`relative p-4 bg-[#f8f9fa] rounded-xl border-2 cursor-pointer transition ${inputs.loadType === 'light_shock_2shift' ? 'border-[#0058be] bg-[#0058be]/5' : 'border-transparent'}`}>
+                                                <input type="radio" name="loadType" value="light_shock_2shift" checked={inputs.loadType === 'light_shock_2shift'} onChange={handleChange} className="hidden" />
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="material-symbols-outlined text-[#ff6b6b] text-lg">warning</span>
+                                                    <span className="text-sm font-bold">Light Shock 2-Shift ⭐</span>
+                                                </div>
+                                                <p className="text-[11px] text-slate-500">K_load = 1.5 (Thesis)</p>
+                                            </label>
+
+                                            <label className={`relative p-4 bg-[#f8f9fa] rounded-xl border-2 cursor-pointer transition ${inputs.loadType === 'heavy_shock' ? 'border-[#0058be] bg-[#0058be]/5' : 'border-transparent'}`}>
+                                                <input type="radio" name="loadType" value="heavy_shock" checked={inputs.loadType === 'heavy_shock'} onChange={handleChange} className="hidden" />
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="material-symbols-outlined text-red-600 text-lg">dangerous</span>
+                                                    <span className="text-sm font-bold">Heavy Shock</span>
+                                                </div>
+                                                <p className="text-[11px] text-slate-500">K_load = 2.0</p>
                                             </label>
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
                                         <label htmlFor="life" className="text-sm font-semibold text-[#191c1d]">Design Lifetime (L)</label>
-                                        <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-3">
                                             <input
                                                 type="range"
-                                                min="1000"
-                                                max="50000"
-                                                step="1000"
+                                                min={inputs.lifeUnit === 'years' ? 1 : 1000}
+                                                max={inputs.lifeUnit === 'years' ? 30 : 50000}
+                                                step={inputs.lifeUnit === 'years' ? 1 : 1000}
                                                 name="life"
                                                 value={inputs.life}
                                                 onChange={handleChange}
                                                 className="flex-1 accent-[#0058be]"
                                             />
-                                            <div className="w-32 relative">
-                                                <input
-                                                    id="life"
-                                                    name="life"
-                                                    type="number"
-                                                    value={inputs.life}
+                                            <div className="flex gap-2">
+                                                <div className="w-24 relative">
+                                                    <input
+                                                        id="life"
+                                                        name="life"
+                                                        type="number"
+                                                        value={inputs.life}
+                                                        onChange={handleChange}
+                                                        className="w-full bg-[#f8f9fa] border-none rounded-lg py-2 px-3 text-sm font-bold"
+                                                    />
+                                                </div>
+                                                <select
+                                                    name="lifeUnit"
+                                                    value={inputs.lifeUnit}
                                                     onChange={handleChange}
-                                                    className="w-full bg-[#f8f9fa] border-none rounded-lg py-2 px-3 text-sm font-bold"
-                                                />
-                                                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-bold">HRS</span>
+                                                    className="bg-[#f8f9fa] border-none rounded-lg py-2 px-3 text-sm font-bold text-slate-600"
+                                                >
+                                                    <option value="years">YEARS</option>
+                                                    <option value="hours">HOURS</option>
+                                                </select>
                                             </div>
                                         </div>
+                                        <p className="text-[11px] text-slate-500 italic">
+                                            {inputs.lifeUnit === 'years' 
+                                                ? 'Design life for the system (1-30 years)' 
+                                                : 'Design life in operating hours (1000-50000 hrs)'}
+                                        </p>
                                     </div>
 
                                     <div className="pt-6 flex items-center justify-between border-t border-[#c2c6d6]/20">
@@ -164,22 +225,38 @@ const Step1Motor = ({ onNext }) => {
                                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">Design Tips</h3>
                                 <div className="space-y-3">
                                     <div className="p-3 bg-[#f3f4f5] rounded-lg">
-                                        <p className="text-xs font-bold">Efficiency Ratio</p>
-                                        <p className="text-[11px] text-slate-500 mt-1">Use synthetic lubrication for speed above 3000 RPM.</p>
+                                        <p className="text-xs font-bold">Load Factor</p>
+                                        <p className="text-[11px] text-slate-500 mt-1">K_load applied to all stress calculations for safety.</p>
                                     </div>
                                     <div className="p-3 bg-[#f3f4f5] rounded-lg">
-                                        <p className="text-xs font-bold">Standard Compliance</p>
-                                        <p className="text-[11px] text-slate-500 mt-1">Calculated using AGMA 2001-D04 assumptions.</p>
+                                        <p className="text-xs font-bold">Life Factor</p>
+                                        <p className="text-[11px] text-slate-500 mt-1">φ_d based on service life for gear rating.</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="bg-white rounded-xl p-6 border border-[#c2c6d6]/20">
-                                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">Calculation Preview</h3>
-                                <div className="space-y-3 text-sm">
-                                    <div className="flex justify-between"><span>Torque Est.</span><strong>102.1 Nm</strong></div>
-                                    <div className="flex justify-between"><span>Service Factor</span><strong>1.25</strong></div>
-                                    <div className="flex justify-between"><span>Estimated Module</span><strong>2.5 m</strong></div>
+                            <div className="bg-gradient-to-br from-[#0058be]/10 to-[#0058be]/5 rounded-xl p-6 border border-[#0058be]/20">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-xs font-bold uppercase tracking-wider text-[#0058be]">Calculation Preview</h3>
+                                    <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                                </div>
+                                <div className="space-y-4">
+                                    <div className="flex justify-between items-center p-3 bg-white rounded-lg border border-[#0058be]/10">
+                                        <span className="text-xs font-medium text-slate-600">Motor Torque</span>
+                                        <strong className="text-lg text-[#0058be]">{calculation.torque ? `${calculation.torque} Nm` : '—'}</strong>
+                                    </div>
+                                    <div className="flex justify-between items-center p-3 bg-white rounded-lg border border-[#0058be]/10">
+                                        <span className="text-xs font-medium text-slate-600">Efficiency</span>
+                                        <strong className="text-lg text-[#0058be]">{calculation.efficiency ? `${calculation.efficiency}%` : '—'}</strong>
+                                    </div>
+                                    <div className="flex justify-between items-center p-3 bg-white rounded-lg border border-orange-200">
+                                        <span className="text-xs font-medium text-slate-600">Load Factor K_load</span>
+                                        <strong className="text-lg text-orange-600">{calculation.loadFactor ? `${calculation.loadFactor}` : '—'}</strong>
+                                    </div>
+                                    <div className="flex justify-between items-center p-3 bg-white rounded-lg border border-orange-200">
+                                        <span className="text-xs font-medium text-slate-600">Life Factor φ_d</span>
+                                        <strong className="text-lg text-orange-600">{calculation.lifeFactor ? `${calculation.lifeFactor}` : '—'}</strong>
+                                    </div>
                                 </div>
                             </div>
                         </div>
