@@ -16,6 +16,7 @@ app.use(express.json());
 // ==========================================
 const motorRoutes = require('./routes/motor.routes');
 const authRoutes = require('./routes/auth.routes');
+const projectRoutes = require('./routes/project.routes');
 const variantRoutes = require('./routes/variant.routes');
 const calculateRoutes = require('./routes/calculation.routes');
 
@@ -34,6 +35,7 @@ sequelize.sync({ alter: true }).then(() => {
 // ==========================================
 app.use('/api/motor', motorRoutes);
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/project', projectRoutes);
 app.use('/api/v1/variant', variantRoutes);
 app.use('/api/v1/calculate', calculateRoutes);
 
@@ -56,8 +58,30 @@ app.use((err, req, res, next) => {
 // 7. KHỞI ĐỘNG SERVER
 // ==========================================
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-    console.log(`🚀 Server running at http://localhost:${PORT}`);
-    console.log(`📝 Auth routes: http://localhost:${PORT}/api/v1/auth`);
-    console.log(`📝 Motor routes: http://localhost:${PORT}/api/motor`);
+const server = app.listen(PORT, () => {
+    console.log('\n========================================');
+    console.log(`✅ SERVER STARTED SUCCESSFULLY`);
+    console.log(`🚀 Backend running at http://localhost:${PORT}`);
+    console.log('========================================');
+    console.log('\n📡 Available Routes:');
+    console.log(`   • POST   ${PORT}/api/v1/auth/register`);
+    console.log(`   • POST   ${PORT}/api/v1/auth/login`);
+    console.log(`   • POST   ${PORT}/api/v1/project/create`);
+    console.log(`   • GET    ${PORT}/api/v1/project/my-projects`);
+    console.log(`   • POST   ${PORT}/api/v1/calculate/step1`);
+    console.log(`   • POST   ${PORT}/api/v1/calculate/step2`);
+    console.log(`   • POST   ${PORT}/api/v1/calculate/step3`);
+    console.log(`   • GET    ${PORT}/api/motor`);
+    console.log(`   • GET    ${PORT}/api/v1/variant/project/:id`);
+    console.log('========================================\n');
+});
+
+// Handle server errors
+server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        console.error(`❌ ERROR: Port ${PORT} is already in use. Please stop other processes or change PORT in .env`);
+    } else {
+        console.error(`❌ Server Error:`, err.message);
+    }
+    process.exit(1);
 });

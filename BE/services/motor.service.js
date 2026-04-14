@@ -26,12 +26,24 @@ const calculateMotor = async (P_ct, n_ct, efficiencies) => {
         // 4. Tính Tỷ số truyền tổng u_chung
         const u_total = suggestedMotor.speed_rpm / n_ct;
 
+        // 5. Bổ sung: Tính toán thông số động học cơ bản cho trục động cơ
+        // Công thức tính Mô-men xoắn T = 9.55 * 10^6 * P / n (Đơn vị: N.mm)
+        const T_motor = (9.55 * 1000000 * suggestedMotor.power) / suggestedMotor.speed_rpm;
+
         // Trả kết quả về cho Controller
         return {
             eta_total: parseFloat(eta_total.toFixed(4)),
             required_power: parseFloat(P_req.toFixed(4)),
             suggested_motor: suggestedMotor,
-            total_ratio_u: parseFloat(u_total.toFixed(4))
+            total_ratio_u: parseFloat(u_total.toFixed(4)),
+            // Gợi ý cấu trúc Bảng thông số động học trả về cho Frontend
+            kinematic_table: {
+                motor_shaft: {
+                    power_kW: suggestedMotor.power,
+                    speed_rpm: suggestedMotor.speed_rpm,
+                    torque_Nmm: parseFloat(T_motor.toFixed(2))
+                }
+            }
         };
     } catch (error) {
         console.error("❌ Lỗi tại Motor Service:", error.message);

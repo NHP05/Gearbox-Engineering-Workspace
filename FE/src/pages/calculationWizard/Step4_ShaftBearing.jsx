@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import WizardScaffold from './WizardScaffold';
 
 const BEARINGS = [
@@ -9,6 +10,7 @@ const BEARINGS = [
 ];
 
 const Step4ShaftBearing = ({ onNext, onBack }) => {
+    const navigate = useNavigate();
     const [selectedIndex, setSelectedIndex] = useState(1);
 
     // Load from localStorage on mount
@@ -30,6 +32,16 @@ const Step4ShaftBearing = ({ onNext, onBack }) => {
     return (
         <WizardScaffold activeKey="shaft">
             <div className="p-8 space-y-8">
+                <div className="flex items-center justify-between">
+                    <button 
+                        onClick={() => navigate('/dashboard')}
+                        className="flex items-center gap-2 text-slate-500 hover:text-[#191c1d] font-semibold"
+                    >
+                        <span className="material-symbols-outlined">arrow_back</span>
+                        Back to Dashboard
+                    </button>
+                </div>
+
                 <div className="flex justify-between items-end">
                     <div>
                         <span className="text-[10px] text-[#0058be] font-bold uppercase tracking-[0.2em] block mb-1">Configuration Step 04</span>

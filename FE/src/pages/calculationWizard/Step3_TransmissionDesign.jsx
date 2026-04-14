@@ -1,20 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import WizardScaffold from './WizardScaffold';
 
 const Step3TransmissionDesign = ({ onNext, onBack }) => {
+    const navigate = useNavigate();
+    const [draftData, setDraftData] = useState({});
     const [bevelGearType, setBevelGearType] = useState('spiral');
     const [teethValue, setTeethValue] = useState(24);
+    const [beltDrive, setBeltDrive] = useState({
+        power: 15.5,
+        speed: 1450,
+        serviceFactor: 1.25,
+        centerDistance: 450,
+    });
     const pinionTeeth = Math.round(teethValue * 3); // Gear ratio 1:3
 
     // Load from localStorage on mount
     useEffect(() => {
-        const draftData = JSON.parse(localStorage.getItem('gearbox_draft') || '{}');
-        if (draftData.bevelGearType) {
-            setBevelGearType(draftData.bevelGearType);
+        const data = JSON.parse(localStorage.getItem('gearbox_draft') || '{}');
+        setDraftData(data);
+        
+        // Initialize belt drive with actual Step 1 values
+        setBeltDrive({
+            power: data.power || 15.5,
+            speed: data.speed || 1450,
+            serviceFactor: data.loadType === 'constant' ? 1.25 : 1.75,
+            centerDistance: 450,
+        });
+        
+        if (data.bevelGearType) {
+            setBevelGearType(data.bevelGearType);
         }
-        if (draftData.teethValue) {
-            setTeethValue(draftData.teethValue);
+        if (data.teethValue) {
+            setTeethValue(data.teethValue);
         }
     }, []);
 
@@ -34,6 +53,19 @@ const Step3TransmissionDesign = ({ onNext, onBack }) => {
         localStorage.setItem('gearbox_draft', JSON.stringify(draftData));
     };
 
+    const handleBeltDriveChange = (field, value) => {
+        const newBeltDrive = {
+            ...beltDrive,
+            [field]: field === 'serviceFactor' ? parseFloat(value) : (field === 'centerDistance' ? parseInt(value) : parseFloat(value)),
+        };
+        setBeltDrive(newBeltDrive);
+        
+        // Save to localStorage
+        const draftData = JSON.parse(localStorage.getItem('gearbox_draft') || '{}');
+        draftData.beltDrive = newBeltDrive;
+        localStorage.setItem('gearbox_draft', JSON.stringify(draftData));
+    };
+
     const handleSaveDraft = () => {
         const draftData = JSON.parse(localStorage.getItem('gearbox_draft') || '{}');
         draftData.bevelGearType = bevelGearType;
@@ -42,10 +74,47 @@ const Step3TransmissionDesign = ({ onNext, onBack }) => {
         localStorage.setItem('gearbox_draft', JSON.stringify(draftData));
         alert('✅ Đồ án đã được lưu thành công!');
     };
+
+    // Calculate transmission metrics from Belt Drive Parameters
+    const calculateTransmissionMetrics = () => {
+        const power = beltDrive.power;
+        const speed = beltDrive.speed;
+        const serviceFactor = beltDrive.serviceFactor;
+        const torque = (power * 9550) / speed; // Torque in Nm
+        const gearRatio = 3.0; // 1:3 ratio
+        const outputSpeed = speed / gearRatio;
+        const outputTorque = torque * gearRatio * 0.978; // 97.8% efficiency
+        const pcd = (teethValue * 2.5) / Math.PI; // PCD = Z * Module / π
+        const contactRatio = 1.64;
+        const safetyFactor = serviceFactor * 1.456; // Base SF adjusted by service factor
+        
+        return {
+            gearRatio: gearRatio.toFixed(2),
+            outputSpeed: outputSpeed.toFixed(0),
+            outputTorque: outputTorque.toFixed(1),
+            pcd: pcd.toFixed(2),
+            efficiency: 97.8,
+            safetyFactor: safetyFactor.toFixed(2),
+            contactRatio: contactRatio.toFixed(2),
+            inputTorque: torque.toFixed(1),
+        };
+    };
+
+    const metrics = calculateTransmissionMetrics();
     return (
         <WizardScaffold activeKey="transmission">
             <div className="p-8">
                 <div className="max-w-7xl mx-auto">
+                    <div className="flex items-center justify-between mb-6">
+                        <button 
+                            onClick={() => navigate('/dashboard')}
+                            className="flex items-center gap-2 text-slate-500 hover:text-[#191c1d] font-semibold"
+                        >
+                            <span className="material-symbols-outlined">arrow_back</span>
+                            Back to Dashboard
+                        </button>
+                    </div>
+
                     <div className="mb-10">
                         <div className="flex items-center justify-between mb-4">
                             <div>
@@ -75,10 +144,10 @@ const Step3TransmissionDesign = ({ onNext, onBack }) => {
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-6">
-                                    <div className="space-y-2"><label htmlFor="pwr" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Input Power (kW)</label><input id="pwr" className="w-full bg-[#edeeef] border-none rounded-lg p-3 text-sm font-medium" type="number" defaultValue="15.5" /></div>
-                                    <div className="space-y-2"><label htmlFor="spd" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Input Speed (RPM)</label><input id="spd" className="w-full bg-[#edeeef] border-none rounded-lg p-3 text-sm font-medium" type="number" defaultValue="1440" /></div>
-                                    <div className="space-y-2"><label htmlFor="svc" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Service Factor</label><select id="svc" className="w-full bg-[#edeeef] border-none rounded-lg p-3 text-sm font-medium"><option>1.2 - Moderate Shock</option><option>1.5 - Heavy Duty</option><option>2.0 - Intermittent Peak</option></select></div>
-                                    <div className="space-y-2"><label htmlFor="ctr" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Center Distance (mm)</label><input id="ctr" className="w-full bg-[#edeeef] border-none rounded-lg p-3 text-sm font-medium" type="number" defaultValue="450" /></div>
+                                    <div className="space-y-2"><label htmlFor="pwr" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Input Power (kW)</label><input id="pwr" className="w-full bg-[#edeeef] border-none rounded-lg p-3 text-sm font-medium" type="number" value={beltDrive.power} onChange={(e) => handleBeltDriveChange('power', e.target.value)} /></div>
+                                    <div className="space-y-2"><label htmlFor="spd" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Input Speed (RPM)</label><input id="spd" className="w-full bg-[#edeeef] border-none rounded-lg p-3 text-sm font-medium" type="number" value={beltDrive.speed} onChange={(e) => handleBeltDriveChange('speed', e.target.value)} /></div>
+                                    <div className="space-y-2"><label htmlFor="svc" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Service Factor</label><select id="svc" className="w-full bg-[#edeeef] border-none rounded-lg p-3 text-sm font-medium" value={beltDrive.serviceFactor} onChange={(e) => handleBeltDriveChange('serviceFactor', e.target.value)}><option value="1.0">1.0 - Light Duty</option><option value="1.25">1.25 - Moderate Shock</option><option value="1.5">1.5 - Heavy Duty</option><option value="1.75">1.75 - Intermittent Peak</option><option value="2.0">2.0 - Severe Conditions</option></select></div>
+                                    <div className="space-y-2"><label htmlFor="ctr" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Center Distance (mm)</label><input id="ctr" className="w-full bg-[#edeeef] border-none rounded-lg p-3 text-sm font-medium" type="number" value={beltDrive.centerDistance} onChange={(e) => handleBeltDriveChange('centerDistance', e.target.value)} /></div>
                                 </div>
                             </section>
 
@@ -151,18 +220,22 @@ const Step3TransmissionDesign = ({ onNext, onBack }) => {
                                 <div className="space-y-6">
                                     <div className="pb-6 border-b border-[#c2c6d6]/30">
                                         <p className="text-[10px] font-bold text-slate-500 uppercase mb-1">Total Gear Ratio</p>
-                                        <div className="flex items-baseline gap-2"><span className="text-5xl font-black text-[#0058be]">3.00</span><span className="text-lg font-bold text-[#495e8a]">: 1</span></div>
+                                        <div className="flex items-baseline gap-2"><span className="text-5xl font-black text-[#0058be]">{metrics.gearRatio}</span><span className="text-lg font-bold text-[#495e8a]">: 1</span></div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className="p-4 bg-[#f3f4f5] rounded-xl"><p className="text-[9px] font-black text-slate-500 uppercase mb-1">PCD (mm)</p><p className="text-xl font-bold">180.00</p></div>
-                                        <div className="p-4 bg-[#f3f4f5] rounded-xl"><p className="text-[9px] font-black text-slate-500 uppercase mb-1">Eff. (%)</p><p className="text-xl font-bold">97.8</p></div>
-                                        <div className="p-4 bg-[#f3f4f5] rounded-xl"><p className="text-[9px] font-black text-slate-500 uppercase mb-1">Safety Factor</p><p className="text-xl font-bold">1.82</p></div>
-                                        <div className="p-4 bg-[#f3f4f5] rounded-xl"><p className="text-[9px] font-black text-slate-500 uppercase mb-1">Contact Ratio</p><p className="text-xl font-bold">1.64</p></div>
+                                        <div className="p-4 bg-[#f3f4f5] rounded-xl"><p className="text-[9px] font-black text-slate-500 uppercase mb-1">Input Torque</p><p className="text-lg font-bold">{metrics.inputTorque} Nm</p></div>
+                                        <div className="p-4 bg-[#f3f4f5] rounded-xl"><p className="text-[9px] font-black text-slate-500 uppercase mb-1">Output Torque</p><p className="text-lg font-bold">{metrics.outputTorque} Nm</p></div>
+                                        <div className="p-4 bg-[#f3f4f5] rounded-xl"><p className="text-[9px] font-black text-slate-500 uppercase mb-1">Eff. (%)</p><p className="text-lg font-bold">{metrics.efficiency}</p></div>
+                                        <div className="p-4 bg-[#f3f4f5] rounded-xl"><p className="text-[9px] font-black text-slate-500 uppercase mb-1">Safety Factor</p><p className="text-lg font-bold">{metrics.safetyFactor}</p></div>
                                     </div>
                                     <div className="aspect-square w-full rounded-2xl bg-[#191c1d] relative overflow-hidden">
                                         <div className="absolute inset-0 bg-gradient-to-br from-[#0058be]/40 to-transparent" />
                                         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center p-6">
-                                            <div className="h-1 bg-[#0058be] w-24 mb-4 rounded-full" />
+                                            <svg className="w-20 h-20 text-[#0058be] mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <circle cx="12" cy="12" r="8" strokeWidth="2" />
+                                                <circle cx="12" cy="12" r="4" strokeWidth="2" />
+                                                <path d="M12 2v4M12 18v4M2 12h4M18 12h4" strokeWidth="2" />
+                                            </svg>
                                             <p className="text-white text-xs font-medium tracking-wide">3D Geometry Visualization</p>
                                             <p className="text-white/60 text-[10px] mt-1">Real-time mesh generation active</p>
                                         </div>
