@@ -1,3 +1,5 @@
 .env
 node_modules/
 BE/logs/
+BE/ai/LOCAL_LLM_DRAFT_WORKFLOW.md
+setup_database.sh

@@ -147,25 +147,32 @@ const startHttpServer = (onStarted) => {
         return startedServer;
     }
 
-    startedServer = app.listen(PORT, () => {
-        if (typeof onStarted === 'function') {
-            onStarted();
-        }
-    });
+    // Kiểm tra: Nếu KHÔNG phải môi trường Vercel (nghĩa là đang chạy local) thì mới mở port
+    if (!process.env.VERCEL) {
+        startedServer = app.listen(PORT, () => {
+            if (typeof onStarted === 'function') {
+                onStarted();
+            }
+        });
 
-    startedServer.on('error', (err) => {
-        if (err?.code === 'EADDRINUSE') {
-            console.error(`❌ Cổng ${PORT} đang bị chiếm. Hãy tắt process cũ rồi chạy lại.`);
-            console.error(`💡 Gợi ý (WSL): lsof -ti:${PORT} | xargs -r kill -9`);
-        } else {
-            console.error('❌ Server error:', err);
-        }
-        process.exit(1);
-    });
+        startedServer.on('error', (err) => {
+            if (err?.code === 'EADDRINUSE') {
+                console.error(`❌ Cổng ${PORT} đang bị chiếm. Hãy tắt process cũ rồi chạy lại.`);
+                console.error(`💡 Gợi ý (WSL): lsof -ti:${PORT} | xargs -r kill -9`);
+            } else {
+                console.error('❌ Server error:', err);
+            }
+            process.exit(1);
+        });
 
-    return startedServer;
+        return startedServer;
+    }
+
+    // Nếu đang trên Vercel, chúng ta không cần listen port, trả về null để thoát function
+    return null;
 };
 
+// --- RẤT QUAN TR
 // Chế độ Mock: Khởi động server ngay mà không cần database
 const SKIP_DB = process.env.SKIP_DB === 'true';
 
