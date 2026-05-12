@@ -10,6 +10,6 @@ const calculateRoutes = require("./routes/calculateRoutes");
 
 app.use("/api", calculateRoutes);
 
-app.listen(5000, () => {
-  console.log("Server running at http://localhost:5000");
+app.listen(8080, () => {
+  console.log("Server running at http://localhost:8080");
 });

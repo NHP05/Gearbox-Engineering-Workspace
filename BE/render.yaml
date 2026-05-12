@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: gearbox-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node app.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8080
+      - key: DB_HOST
+        scope: shared
+      - key: DB_USER
+        scope: shared
+      - key: DB_PASSWORD
+        scope: shared
+      - key: DB_NAME
+        value: gearbox_db
+      - key: CORS_ORIGIN
+        value: https://your-app.vercel.app
+      - key: JWT_SECRET
+        scope: shared

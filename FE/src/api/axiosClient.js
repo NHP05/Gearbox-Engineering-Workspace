@@ -4,8 +4,16 @@ const defaultApiBaseUrl = 'http://localhost:8080/api/v1';
 const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL || defaultApiBaseUrl;
 
 const normalizeApiBaseUrl = (value) => {
-    const normalized = String(value || '').trim().replace(/\/+$/, '');
+    let normalized = String(value || '').trim().replace(/\/+$|\s+$/g, '');
     if (!normalized) return defaultApiBaseUrl;
+
+    if (/^:\d+/.test(normalized)) {
+        normalized = `http://localhost${normalized}`;
+    } else if (/^\/\//.test(normalized)) {
+        normalized = `http:${normalized}`;
+    } else if (!/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(normalized)) {
+        normalized = `http://${normalized}`;
+    }
 
     if (/\/api\/v\d+$/i.test(normalized)) {
         return normalized;
